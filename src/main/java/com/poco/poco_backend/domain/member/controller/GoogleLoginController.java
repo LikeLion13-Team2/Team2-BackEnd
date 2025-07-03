@@ -1,17 +1,32 @@
 package com.poco.poco_backend.domain.member.controller;
 
+import com.poco.poco_backend.global.CustomResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Google Login", description = "구글 로그인 관련 api입니다.")
+@RequestMapping("/api/auth")
+@Tag(name = "구글 로그인 토큰 발급 api", description = "구글 로그인 토큰 발급 api입니다.")
 public class GoogleLoginController {
 
-    @Operation(summary = "구글 로그인", description = "구글 로그인 페이지로 리다이렉트 합니다.")
-    @GetMapping("/oauth/authorization/google")
-    public void googleLoginRedirect() {}
+    //private final GoogleLoginService;
+
+    //토큰 재발급 api
+    @Operation(method = "POST", summary = "토큰 재발급",
+            description = "토큰 재발급. accessToken과 refreshToken을 body에 담아서 전송합니다.")
+    @PostMapping("/reissue")
+    public CustomResponse<?> reissue() {
+
+        log.info("[ Google Login Controller ] 토큰을 재발급 합니다.");
+
+        return CustomResponse.onSuccess(googleService.reissueToken(jwtDto));
+    }
 }
