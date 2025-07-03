@@ -1,0 +1,38 @@
+package com.poco.poco_backend.global.security.handler;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.poco.poco_backend.global.CustomResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+
+//클래스가 빈으로 자동 등록
+@Component
+//인가 실패시 예외를 처리하는 핸들러
+//인증은 되었지만, 접근 권한은 없을 때
+//SecurityConfig에서 주로 사용됨
+public class JwtAccessDeniedHandler implements AccessDeniedHandler {
+    //인가 실패시 호출됨
+    @Override
+    public void handle(HttpServletRequest request, HttpServletResponse response,
+                       AccessDeniedException accessDeniedException) throws IOException {
+        //content_type json으로 설정
+        response.setContentType("application/json; charset=UTF-8");
+        //상태 코드 403으로 설정
+        response.setStatus(403);
+        //실패 응답 객체 생성
+        CustomResponse<Object> errorResponse = CustomResponse.onFailure(
+                AuthErrorCode.FORBIDDEN_403.getCode(),
+                AuthErrorCode.FORBIDDEN_403.getMessage(),
+                null
+        );
+        //ObjectMapper를 사용하여 Json으로 변환 후 응답으로 출력
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(response.getOutputStream(), errorResponse);
+    }
+
+}
