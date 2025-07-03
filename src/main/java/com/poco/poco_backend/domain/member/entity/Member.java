@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "member")
-public class MemberEntity {
+public class Member {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -19,6 +20,9 @@ public class MemberEntity {
 
     @Column(name = "nickname")
     private String nickname;
+
+    @Column(name = "password")
+    private String password;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

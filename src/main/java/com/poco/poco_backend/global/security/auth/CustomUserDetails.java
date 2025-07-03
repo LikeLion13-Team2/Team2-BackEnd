@@ -13,6 +13,7 @@ public class CustomUserDetails implements UserDetails {
     //MemberEntity에 존재하는 내용들이어야함.
     private final String email;
 
+    //일반 로그인을 구현할 경우를 대비한 주석처리
     private final String password;
 
     private final String roles;
@@ -42,6 +43,8 @@ public class CustomUserDetails implements UserDetails {
         return email;
     }
 
+
+    //일반 로그인을 구현할 경우를 대비해 주석처리
     @Override
     public String getPassword() {
         return password;
