@@ -3,7 +3,6 @@ package com.poco.poco_backend.domain.member.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.security.Identity;
 import java.time.LocalDateTime;
 
 @Entity
