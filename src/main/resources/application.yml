@@ -8,4 +8,4 @@ spring:
     secret: ${JWT_SECRET} # JWT 시크릿 키
     token:
       access-expiration-time: ${JWT_ACCESS_EXPIRATION}  # Access Token 만료 시간
-      refresh-expiration-time: ${JWT_ACCESS_EXPIRATION}  #  Refresh Token 만료 시간
+      refresh-expiration-time: ${JWT_REFRESH_EXPIRATION}  #  Refresh Token 만료 시간
