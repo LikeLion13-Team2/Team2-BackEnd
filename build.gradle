@@ -35,6 +35,13 @@ dependencies {
 
 	//jdbc
 	implementation 'com.mysql:mysql-connector-j:8.3.0'
+
+	// My SQL
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// JPA
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
 }
 
 // jar 파일 하나만 생성하게 하는거
