@@ -1,6 +1,8 @@
 package com.poco.poco_backend.global.Config;
 
 import com.poco.poco_backend.global.security.filter.JwtAuthorizationFilter;
+import com.poco.poco_backend.global.security.handler.JwtAccessDeniedHandler;
+import com.poco.poco_backend.global.security.handler.JwtAuthenticationEntryPoint;
 import com.poco.poco_backend.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

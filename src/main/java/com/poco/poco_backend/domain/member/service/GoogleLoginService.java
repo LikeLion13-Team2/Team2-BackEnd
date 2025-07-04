@@ -2,6 +2,7 @@ package com.poco.poco_backend.domain.member.service;
 
 import com.poco.poco_backend.domain.member.entity.Token;
 import com.poco.poco_backend.domain.member.repository.TokenRepository;
+import com.poco.poco_backend.global.code.AuthErrorCode;
 import com.poco.poco_backend.global.security.auth.AuthException;
 import com.poco.poco_backend.global.security.jwt.JwtDTO;
 import com.poco.poco_backend.global.security.jwt.JwtUtil;

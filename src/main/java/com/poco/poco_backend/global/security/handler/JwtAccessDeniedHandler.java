@@ -2,6 +2,7 @@ package com.poco.poco_backend.global.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poco.poco_backend.global.CustomResponse;
+import com.poco.poco_backend.global.code.AuthErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.access.AccessDeniedException;
