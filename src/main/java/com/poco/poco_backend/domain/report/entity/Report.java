@@ -1,5 +1,6 @@
 package com.poco.poco_backend.domain.report.entity;
 
+import com.poco.poco_backend.common.entity.BaseTimeEntity;
 import com.poco.poco_backend.common.enums.PeriodType;
 import com.poco.poco_backend.domain.member.entity.Member;
 import jakarta.persistence.*;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Report {
+public class Report extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
