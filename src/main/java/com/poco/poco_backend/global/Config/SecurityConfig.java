@@ -39,37 +39,28 @@ public class SecurityConfig {
     private final String[] allowUrl = {
             "/api/v1/login", //로그인 은 인증이 필요하지 않음
             "/api/v1/auth", // 회원가입은 인증이 필요하지 않음
-            "/api/v1/login/kakao",
+            "/api/v1/login/kakao", //카카오 로그인은 인증이 필요하지 않음
             "/auth/reissue", // 토큰 재발급은 인증이 필요하지 않음
-            "/auth/**",
-            "api/usage",
+            "/auth/**", //기타 인증 관련 경로
+            "api/usage", //사용량 측정
             "/swagger-ui/**",   // swagger 관련 URL
-            "/v3/api-docs/**",
-            "/callback/kakao",
-            "/api/v1/emails"
+            "/v3/api-docs/**", // swagger api 문서
+            "/callback/kakao",  //소셜 로그인 콜백
+            "/api/v1/emails" //이메일 관련 api
     };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        //로그인 필터 생성: 사용자 인증 성공 시 jwt 발급
-        CustomLoginFilter loginFilter = new CustomLoginFilter(
-                authenticationManager(authenticationConfiguration),
-                jwtUtil
-        );
-        //요청 url이 해당 url 일 때, 이 filter가 처리
-        loginFilter.setFilterProcessesUrl("/api/v1/login");
 
         http
-                //url 접근 권한 설정
+                //요청 url별  접근 권한 설정
                 .authorizeHttpRequests(request -> request
                         //인증 없이 접근 허용
                         .requestMatchers(allowUrl).permitAll()
                         //그 외는 인증 필요
                         .anyRequest().authenticated())
-                //jwt인증 필터 등록 -> 매 요청마다 jwt 유효성 검사하겠음
+                //jwt인증 필터를 UsernamePasswordAuthenticationFilter 앞에 등록 -> 매 요청마다 jwt 유효성 검사하겠음
                 .addFilterBefore(new JwtAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
-                //로그인 필터 등록 -> 아이디, 비밀번호 검증 후 jwt 발급
-                .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
                 //기본 로그인 페이지 비활성화 (우리는 restapi로 처리하겠다.)
                 .formLogin(AbstractHttpConfigurer::disable)
                 //http basic 인증 비활성화
