@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -36,11 +38,19 @@ public class GoogleLoginService {
     @Value("${oauth.google.redirect-uri}")
     private String redirectUri;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate = createRestTemplate();
 
     private final JwtUtil jwtUtil;
     private final TokenRepository tokenRepository;
     private final MemberRepository memberRepository;
+
+    //MessageConverter 수동 주입
+    private RestTemplate createRestTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter()); // JSON 응답 파싱용
+        return restTemplate;
+    }
 
     //code로 access token 요청 (사용자 정보 반환)
     public GoogleMemberDTO getMemberInfo(String code) {
@@ -59,6 +69,10 @@ public class GoogleLoginService {
 
 
         HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(body, headers);
+
+        //헤더, 바디 로그 출력
+        log.info("Token Request Headers: {}", headers);
+        log.info("Token Request Body: {}", body);
 
         ResponseEntity<Map> tokenResponse = restTemplate.postForEntity(
                 "https://oauth2.googleapis.com/token", tokenRequest, Map.class);
