@@ -1,0 +1,92 @@
+package com.poco.poco_backend.global.security.filter;
+
+
+import com.poco.poco_backend.global.security.auth.CustomUserDetails;
+import com.poco.poco_backend.global.security.jwt.JwtUtil;
+import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.security.SignatureException;
+
+@Slf4j
+@RequiredArgsConstructor
+public class JwtAuthorizationFilter extends OncePerRequestFilter {
+
+    private final JwtUtil jwtUtil;
+    // JWT 관련 유틸리티 클래스 주입
+    @Override
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
+        log.info("[ JwtAuthorizationFilter ] 인가 필터 작동");
+
+        try {
+            // 1. Request에서 Access Token 추출
+            String accessToken = jwtUtil.resolveAccessToken(request);
+
+            // 2. Access Token이 없으면 다음 필터로 바로 진행
+            if (accessToken == null) {
+                log.info("[ JwtAuthorizationFilter ] Access Token 이 존재하지 않음. 필터를 건너뜁니다.");
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // 3. Access Token을 이용한 인증 처리
+            authenticateAccessToken(accessToken);
+            log.info("[ JwtAuthorizationFilter ] 종료. 다음 필터로 넘어갑니다.");
+            filterChain.doFilter(request, response);
+
+        } catch (ExpiredJwtException e) {
+            // 4. 토큰 만료 시 401 응답 처리
+            logger.warn("[ JwtAuthorizationFilter ] accessToken 이 만료되었습니다.");
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("Access Token 이 만료되었습니다.");
+        } catch (SignatureException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Access Token을 바탕으로 인증 객체 생성 및 SecurityContext에 저장
+    private void authenticateAccessToken(String accessToken) throws SignatureException {
+        log.info("[ JwtAuthorizationFilter ] 토큰으로 인가 과정을 시작합니다. ");
+
+        // 1. Access Token의 유효성 검증
+        jwtUtil.validateToken(accessToken);
+        log.info("[ JwtAuthorizationFilter ] Access Token 유효성 검증 성공. ");
+
+        // 2. Access Token에서 사용자 정보 추출 후 CustomUserDetails 생성
+        CustomUserDetails userDetails = new CustomUserDetails(
+                jwtUtil.getEmail(accessToken),
+                null,
+                jwtUtil.getRoles(accessToken)
+        );
+        log.info("[ JwtAuthorizationFilter ] UserDetails 객체 생성 성공");
+
+        // 3. 인증 객체 생성 및 SecurityContextHolder에 저장
+        Authentication authToken = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+        log.info("[ JwtAuthorizationFilter ] 인증 객체 저장 완료");
+    }
+
+
+}
+
