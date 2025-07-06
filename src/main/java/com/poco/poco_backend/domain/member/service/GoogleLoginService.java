@@ -45,9 +45,11 @@ public class GoogleLoginService {
     //code로 access token 요청 (사용자 정보 반환)
     public GoogleMemberDTO getMemberInfo(String code) {
         //1-1 access token 요청
+        //헤더 설정
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
+        //바디 설정
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("code", code);
         body.add("client_id", clientId);
@@ -56,7 +58,7 @@ public class GoogleLoginService {
         body.add("grant_type", "authorization_code");
 
 
-        HttpEntity<?> tokenRequest = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(body, headers);
 
         ResponseEntity<Map> tokenResponse = restTemplate.postForEntity(
                 "https://oauth2.googleapis.com/token", tokenRequest, Map.class);
