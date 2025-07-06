@@ -37,9 +37,9 @@ public class SecurityConfig {
 
     //인증이 필요하지 않은 url
     private final String[] allowUrl = {
-            "/api/v1/login", //로그인 은 인증이 필요하지 않음
-            "/api/v1/auth", // 회원가입은 인증이 필요하지 않음
-            "/api/v1/login/kakao", //카카오 로그인은 인증이 필요하지 않음
+            "/api/login", //로그인 은 인증이 필요하지 않음
+            "/api/oauth/**", // 회원가입은 인증이 필요하지 않음
+            "/api/login/kakao", //카카오 로그인은 인증이 필요하지 않음
             "/auth/reissue", // 토큰 재발급은 인증이 필요하지 않음
             "/auth/**", //기타 인증 관련 경로
             "api/usage", //사용량 측정

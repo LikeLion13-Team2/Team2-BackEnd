@@ -33,9 +33,9 @@ public class JwtUtil {
 
 
     public JwtUtil(
-            @Value("${JWT_SECRET}") String secret,
-            @Value("${JWT_ACCESS_EXPIRATION}") Long access,
-            @Value("${JWT_REFRESH_EXPIRATION}") Long refresh,
+            @Value("${spring.jwt.secret}") String secret,
+            @Value("${spring.jwt.token.access-expiration-time}") Long access,
+            @Value("${spring.jwt.token.refresh-expiration-time}") Long refresh,
             TokenRepository tokenRepo
     ) {
         //시크릿 키 생성 + 각종 필드 초기화

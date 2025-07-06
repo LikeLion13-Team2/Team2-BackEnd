@@ -24,6 +24,11 @@ public class CustomUserDetails implements UserDetails {
         this.password = password;
         this.roles = roles;
     }
+    //생성자2(구글 로그인용)
+    /*public CustomUserDetails(String email, String roles) {
+        this.email = email;
+        this.roles = roles;
+    }*/
 
     //반환값 = 뭐든간에 GrantedAuthority를 구현한(상속받은)게 들어간 Collection
     //authorities라는 리스트를 만들고
