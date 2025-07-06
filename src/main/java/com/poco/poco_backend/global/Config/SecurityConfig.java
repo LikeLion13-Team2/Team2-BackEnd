@@ -32,7 +32,7 @@ public class SecurityConfig {
     //인가 예외 핸들러
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     //인증 실패 핸들러
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 
     //인증이 필요하지 않은 url
@@ -71,6 +71,8 @@ public class SecurityConfig {
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                // cors
+                .cors(cors -> cors.configurationSource(CorsConfig.apiConfigurationSource()))
         ;
 
         //최종 SecurityFilterChain 객체 생성
