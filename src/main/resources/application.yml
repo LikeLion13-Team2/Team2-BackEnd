@@ -10,6 +10,18 @@ spring:
       access-expiration-time: ${JWT_ACCESS_EXPIRATION}  # Access Token 만료 시간
       refresh-expiration-time: ${JWT_REFRESH_EXPIRATION}  #  Refresh Token 만료 시간
 
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+        jdbc:
+          batch_size: 1000
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
 oauth:
   google:
     client-id: ${OAUTH_GOOGLE_CLIENT_ID}
