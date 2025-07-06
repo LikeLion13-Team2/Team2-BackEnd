@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.security.SignatureException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -45,12 +48,26 @@ public class GoogleLoginService {
     private final MemberRepository memberRepository;
 
     //MessageConverter 수동 주입
-    private RestTemplate createRestTemplate() {
+    /*private RestTemplate createRestTemplate() {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter()); // JSON 응답 파싱용
         return restTemplate;
+    }*/
+
+    //리스트 형식으로 변경하여 명시적으로 선후 관계 지정.
+    private RestTemplate createRestTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 새 리스트를 만들어서 순서를 명확히 지정
+        List<HttpMessageConverter<?>> converters = new ArrayList<>();
+        converters.add(new FormHttpMessageConverter());
+        converters.add(new MappingJackson2HttpMessageConverter());
+
+        restTemplate.setMessageConverters(converters);
+        return restTemplate;
     }
+
 
     //code로 access token 요청 (사용자 정보 반환)
     public GoogleMemberDTO getMemberInfo(String code) {
