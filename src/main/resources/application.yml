@@ -27,3 +27,6 @@ oauth:
     client-id: ${OAUTH_GOOGLE_CLIENT_ID}
     google-secret: ${OAUTH_GOOGLE_CLIENT_SECRET}
     redirect-uri: ${OAUTH_GOOGLE_REDIRECT_URI}
+  kakao:
+    client-id: ${OAUTH_KAKAO_CLIENT_ID}
+    redirect-uri: ${OAUTH_KAKAO_REDIRECT_URI}

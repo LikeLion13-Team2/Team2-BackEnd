@@ -63,6 +63,7 @@ public class GoogleLoginService {
 
     //code로 access token 요청 (사용자 정보 반환)
     public GoogleMemberDTO getMemberInfo(String code) {
+        //발급받은 인가 코드 디코딩
         final String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);
 
         //1-1 access token 요청
@@ -131,7 +132,7 @@ public class GoogleLoginService {
                 });
     }
 
-    //3. Jwt 생성
+    //Jwt 생성
     public String createJwt(Member member) {
 
         CustomUserDetails newUserDetails = new CustomUserDetails(
