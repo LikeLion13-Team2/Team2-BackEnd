@@ -104,7 +104,7 @@ public class GoogleLoginService {
 
         return new GoogleMemberDTO(
                 (String) memberInfo.get("email"),
-                (String) memberInfo.get("nickname")
+                (String) memberInfo.get("name")
         );
 
     }
@@ -115,7 +115,7 @@ public class GoogleLoginService {
                 .orElseGet(() -> {
                     Member newMember = Member.builder()
                             .email(googleMemberDto.email())
-                            .nickname(googleMemberDto.nickname())
+                            .name(googleMemberDto.name())
                             .password("")
                             .roles("ROLE_USER")
                             .build();
