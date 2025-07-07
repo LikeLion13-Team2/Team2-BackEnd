@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,8 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -50,8 +53,12 @@ public class GoogleLoginService {
     @PostConstruct
     private void initRestTemplate() {
         this.restTemplate = new RestTemplate();
-        this.restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
-        this.restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        List<HttpMessageConverter<?>> converters = new ArrayList<>();
+        converters.add(new FormHttpMessageConverter());
+        converters.add(new MappingJackson2HttpMessageConverter());
+        converters.addAll(restTemplate.getMessageConverters());
+
+        this.restTemplate.setMessageConverters(converters);
     }
 
     //code로 access token 요청 (사용자 정보 반환)
