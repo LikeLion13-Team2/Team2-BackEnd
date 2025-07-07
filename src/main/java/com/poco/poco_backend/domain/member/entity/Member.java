@@ -23,8 +23,8 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_id")
     private Long memberId;
 
-    @Column(name = "nickname")
-    private String nickname;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "password")
     private String password;
