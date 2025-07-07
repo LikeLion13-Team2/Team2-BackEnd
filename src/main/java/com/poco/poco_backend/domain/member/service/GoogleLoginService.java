@@ -23,6 +23,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
 import java.util.Map;
 
@@ -53,6 +55,8 @@ public class GoogleLoginService {
 
     //code로 access token 요청 (사용자 정보 반환)
     public GoogleMemberDTO getMemberInfo(String code) {
+        code = URLDecoder.decode(code, StandardCharsets.UTF_8);
+
         //1-1 access token 요청
         //헤더 설정
         HttpHeaders headers = new HttpHeaders();
