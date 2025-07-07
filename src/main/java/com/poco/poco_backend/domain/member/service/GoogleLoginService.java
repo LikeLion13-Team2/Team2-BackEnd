@@ -60,8 +60,13 @@ public class GoogleLoginService {
 
         HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(body, headers);
 
+
+
         ResponseEntity<Map> tokenResponse = restTemplate.postForEntity(
                 "https://oauth2.googleapis.com/token", tokenRequest, Map.class);
+
+        log.info("Token Status: {}", tokenResponse.getStatusCode());
+        log.info("Token Body: {}", tokenResponse.getBody());
 
         log.info("[GoogleLoginService] Token Response: {}", tokenResponse.getBody());
 
