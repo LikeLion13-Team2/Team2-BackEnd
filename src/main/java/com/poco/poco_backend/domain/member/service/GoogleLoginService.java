@@ -11,6 +11,7 @@ import com.poco.poco_backend.global.security.auth.CustomUserDetails;
 import com.poco.poco_backend.global.security.auth.CustomUserDetailsService;
 import com.poco.poco_backend.global.security.jwt.JwtDTO;
 import com.poco.poco_backend.global.security.jwt.JwtUtil;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,13 +45,13 @@ public class GoogleLoginService {
     private final TokenRepository tokenRepository;
     private final MemberRepository memberRepository;
 
-    private final RestTemplate restTemplate = createRestTemplate();
+    private RestTemplate restTemplate;
 
-    private RestTemplate createRestTemplate() {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
-        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        return restTemplate;
+    @PostConstruct
+    private void initRestTemplate() {
+        this.restTemplate = new RestTemplate();
+        this.restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+        this.restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
     }
 
     //code로 access token 요청 (사용자 정보 반환)
