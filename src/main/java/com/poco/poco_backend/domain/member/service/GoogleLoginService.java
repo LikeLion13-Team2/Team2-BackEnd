@@ -55,7 +55,7 @@ public class GoogleLoginService {
 
     //code로 access token 요청 (사용자 정보 반환)
     public GoogleMemberDTO getMemberInfo(String code) {
-        code = URLDecoder.decode(code, StandardCharsets.UTF_8);
+        final String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);
 
         //1-1 access token 요청
         //헤더 설정
@@ -64,7 +64,7 @@ public class GoogleLoginService {
 
         //바디 설정
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("code", code);
+        body.add("code", decodedCode);
         body.add("client_id", clientId);
         body.add("client_secret", clientSecret);
         body.add("redirect_uri", redirectUri);
