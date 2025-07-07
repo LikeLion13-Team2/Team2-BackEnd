@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -36,11 +38,18 @@ public class GoogleLoginService {
     @Value("${oauth.google.redirect-uri}")
     private String redirectUri;
 
-    private final RestTemplate restTemplate = new RestTemplate();
-
     private final JwtUtil jwtUtil;
     private final TokenRepository tokenRepository;
     private final MemberRepository memberRepository;
+
+    private final RestTemplate restTemplate = createRestTemplate();
+
+    private RestTemplate createRestTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        return restTemplate;
+    }
 
     //code로 access token 요청 (사용자 정보 반환)
     public GoogleMemberDTO getMemberInfo(String code) {
@@ -60,13 +69,14 @@ public class GoogleLoginService {
 
         HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(body, headers);
 
-
+        log.info("Google Token Request Body = {}", body);
+        log.info("Google Token Headers = {}", headers);
 
         ResponseEntity<Map> tokenResponse = restTemplate.postForEntity(
                 "https://oauth2.googleapis.com/token", tokenRequest, Map.class);
 
-        log.info("Token Status: {}", tokenResponse.getStatusCode());
-        log.info("Token Body: {}", tokenResponse.getBody());
+        log.info("Google Token Request Body = {}", body);
+        log.info("Google Token Headers = {}", headers);
 
         log.info("[GoogleLoginService] Token Response: {}", tokenResponse.getBody());
 
