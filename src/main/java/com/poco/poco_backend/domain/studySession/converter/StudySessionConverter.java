@@ -38,4 +38,18 @@ public class StudySessionConverter {
                 .focusScore(studySession.getFocusScore())
                 .build();
     }
+
+    public static StudySessionResponseDTO.StudySessionDetailResponseDTO toStudySessionDetailResponseDTO(StudySession studySession) {
+        return StudySessionResponseDTO.StudySessionDetailResponseDTO.builder()
+                .title(studySession.getTitle())
+                .startedAt(studySession.getStartedAt())
+                .endedAt(studySession.getEndedAt())
+                .sessionSeconds(studySession.getSessionSeconds())
+                .focusSeconds(studySession.getFocusSeconds())
+                .distractionSeconds(studySession.getDistractionSeconds())
+                .breakSeconds(studySession.getBreakSeconds())
+                .longestFocusSeconds(studySession.getLongestFocusSeconds())
+                .focusScore(studySession.getFocusScore())
+                .build();
+    }
 }

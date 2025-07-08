@@ -3,16 +3,15 @@ package com.poco.poco_backend.domain.studySession.controller;
 import com.poco.poco_backend.domain.studySession.dto.request.StudySessionRequestDTO;
 import com.poco.poco_backend.domain.studySession.dto.response.StudySessionResponseDTO;
 import com.poco.poco_backend.domain.studySession.service.command.StudySessionCommandService;
+import com.poco.poco_backend.domain.studySession.service.query.StudySessionQueryService;
 import com.poco.poco_backend.global.CustomResponse;
 import com.poco.poco_backend.global.security.auth.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StudySessionController {
 
     private final StudySessionCommandService studySessionCommandService;
+    private final StudySessionQueryService studySessionQueryService;
 
     @Operation(
             summary = "학습 세션 저장",
@@ -36,6 +36,21 @@ public class StudySessionController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         return CustomResponse.onSuccess(studySessionCommandService.createSession(request, userDetails.getUsername()));
+    }
+
+    @Operation(
+            summary = "학습 세션 조회",
+            description = """
+                    저장된 학습 세션을 조회합니다.\n
+                    세션 제목, 시작/종료 시각, 세션 전체 시간, 집중 시간, 딴짓 시간, 쉬는 시간, 최장 집중 시간, 집중 점수를 조회할 수 있습니다.
+                    """
+    )
+    @GetMapping("/{sessionId}")
+    public CustomResponse<StudySessionResponseDTO.StudySessionDetailResponseDTO> getStudySession(
+            @PathVariable Long sessionId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return CustomResponse.onSuccess(HttpStatus.OK, studySessionQueryService.getStudySessionDetail(sessionId, userDetails.getUsername()));
     }
 
 }

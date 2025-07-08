@@ -21,4 +21,18 @@ public class StudySessionResponseDTO {
     ) {
     }
 
+    @Builder
+    public record StudySessionDetailResponseDTO(
+            String title,
+            LocalDateTime startedAt,
+            LocalDateTime endedAt,
+            Long sessionSeconds,
+            Long focusSeconds,
+            Long distractionSeconds,
+            Long breakSeconds,
+            Long longestFocusSeconds,
+            Double focusScore
+    ) {
+    }
+
 }
