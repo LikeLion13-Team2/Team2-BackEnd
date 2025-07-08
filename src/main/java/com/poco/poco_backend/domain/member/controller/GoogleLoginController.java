@@ -1,5 +1,6 @@
 package com.poco.poco_backend.domain.member.controller;
 
+import com.poco.poco_backend.domain.member.dto.request.CodeDTO;
 import com.poco.poco_backend.domain.member.dto.request.GoogleMemberDTO;
 import com.poco.poco_backend.domain.member.entity.Member;
 import com.poco.poco_backend.domain.member.service.GoogleLoginService;
@@ -29,11 +30,11 @@ public class GoogleLoginController {
             accessToken을 클라이언트로 전송합니다.            
             """
     )
-    @GetMapping("/google")
-    public CustomResponse<?> googleLogin(@RequestParam("code") String code) {
+    @PostMapping("/google")
+    public CustomResponse<?> googleLogin(@RequestBody CodeDTO codeDTO) {
 
         //코드를 보내서 파싱한 다음
-        GoogleMemberDTO memberDTO = googleLoginService.getMemberInfo(code);
+        GoogleMemberDTO memberDTO = googleLoginService.getMemberInfo(codeDTO.code());
 
         Member member = googleLoginService.signupOrGetMember(memberDTO);
 

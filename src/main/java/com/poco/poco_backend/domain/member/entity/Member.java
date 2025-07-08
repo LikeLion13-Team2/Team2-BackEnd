@@ -34,6 +34,9 @@ public class Member extends BaseTimeEntity {
 
     @Column(name = "roles")
     private String roles;
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Token token;
   
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudySession> studySessions = new ArrayList<>();
