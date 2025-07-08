@@ -1,12 +1,7 @@
 package com.poco.poco_backend.domain.member.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Getter
@@ -20,5 +15,10 @@ public class Token {
     private String email;
 
     private String token;
+
+    @OneToOne
+    @Setter
+    @JoinColumn(name = "member_id") // 외래키
+    private Member member;
 
 }

@@ -168,6 +168,10 @@ public class GoogleLoginService {
                 .email(member.getEmail())
                 .token(refreshToken)
                 .build();
+
+        //멤버와의 연관관계
+        token.setMember(member);
+
         tokenRepository.save(token);
 
         return new JwtDTO(
