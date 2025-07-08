@@ -32,6 +32,7 @@ public class GoogleLoginController {
     @GetMapping("/google")
     public CustomResponse<?> googleLogin(@RequestParam("code") String code) {
 
+        //코드를 보내서 파싱한 다음
         GoogleMemberDTO memberDTO = googleLoginService.getMemberInfo(code);
 
         Member member = googleLoginService.signupOrGetMember(memberDTO);

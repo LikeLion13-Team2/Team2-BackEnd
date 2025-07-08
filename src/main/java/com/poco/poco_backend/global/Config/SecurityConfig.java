@@ -41,7 +41,7 @@ public class SecurityConfig {
             "/api/oauth/**", // 회원가입은 인증이 필요하지 않음
             "/auth/reissue", // 토큰 재발급은 인증이 필요하지 않음
             "/auth/**", //기타 인증 관련 경로
-            "api/usage", //사용량 측정
+            "/api/usage", //사용량 측정
             "/swagger-ui/**",   // swagger 관련 URL
             "/v3/api-docs/**", // swagger api 문서
             "/callback/kakao",  //소셜 로그인 콜백

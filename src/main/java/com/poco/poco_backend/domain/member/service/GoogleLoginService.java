@@ -37,11 +37,11 @@ import java.util.Map;
 @Service
 public class GoogleLoginService {
 
-    @Value("${oauth.google.client-id}")
+    @Value("${oauth.google.client_id}")
     private String clientId;
-    @Value("${oauth.google.google-secret}")
+    @Value("${oauth.google.google_secret}")
     private String clientSecret;
-    @Value("${oauth.google.redirect-uri}")
+    @Value("${oauth.google.redirect_uri}")
     private String redirectUri;
 
     private final JwtUtil jwtUtil;
