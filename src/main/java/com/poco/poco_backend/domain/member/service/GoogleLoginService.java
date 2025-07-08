@@ -15,6 +15,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -33,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class GoogleLoginService {
 
@@ -50,7 +50,20 @@ public class GoogleLoginService {
 
     private RestTemplate restTemplate;
 
-    @PostConstruct
+    public GoogleLoginService (
+            JwtUtil jwtUtil,
+            TokenRepository tokenRepository,
+            MemberRepository memberRepository,
+            RestTemplateBuilder restTemplateBuilder
+    ) {
+        this.jwtUtil = jwtUtil;
+        this.tokenRepository = tokenRepository;
+        this.memberRepository = memberRepository;
+        this.restTemplate = restTemplateBuilder.messageConverters(new FormHttpMessageConverter(),
+                new MappingJackson2HttpMessageConverter()).build();
+    }
+
+    /*@PostConstruct
     private void initRestTemplate() {
 
         log.info("[GoogleLoginService] clientId: {}", clientId);
@@ -64,7 +77,7 @@ public class GoogleLoginService {
         converters.addAll(restTemplate.getMessageConverters());
 
         this.restTemplate.setMessageConverters(converters);
-    }
+    }*/
 
     //code로 access token 요청 (사용자 정보 반환)
     public GoogleMemberDTO getMemberInfo(String code) {
