@@ -9,11 +9,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.SignatureException;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -34,6 +32,7 @@ public class GoogleLoginController {
     @GetMapping("/google")
     public CustomResponse<?> googleLogin(@RequestParam("code") String code) {
 
+        //코드를 보내서 파싱한 다음
         GoogleMemberDTO memberDTO = googleLoginService.getMemberInfo(code);
 
         Member member = googleLoginService.signupOrGetMember(memberDTO);

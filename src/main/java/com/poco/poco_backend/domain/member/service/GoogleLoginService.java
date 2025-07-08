@@ -37,11 +37,11 @@ import java.util.Map;
 @Service
 public class GoogleLoginService {
 
-    @Value("${oauth.google.client-id}")
+    @Value("${oauth.google.client_id}")
     private String clientId;
-    @Value("${oauth.google.google-secret}")
+    @Value("${oauth.google.google_secret}")
     private String clientSecret;
-    @Value("${oauth.google.redirect-uri}")
+    @Value("${oauth.google.redirect_uri}")
     private String redirectUri;
 
     private final JwtUtil jwtUtil;
@@ -63,6 +63,7 @@ public class GoogleLoginService {
 
     //code로 access token 요청 (사용자 정보 반환)
     public GoogleMemberDTO getMemberInfo(String code) {
+        //발급받은 인가 코드 디코딩
         final String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);
 
         //1-1 access token 요청
@@ -131,7 +132,7 @@ public class GoogleLoginService {
                 });
     }
 
-    //3. Jwt 생성
+    //Jwt 생성
     public String createJwt(Member member) {
 
         CustomUserDetails newUserDetails = new CustomUserDetails(
