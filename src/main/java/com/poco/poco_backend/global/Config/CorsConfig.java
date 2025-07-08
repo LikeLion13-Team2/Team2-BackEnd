@@ -25,6 +25,7 @@ public class CorsConfig implements WebMvcConfigurer {
         allowedOriginPatterns.add("http://localhost:3000");
         allowedOriginPatterns.add("https://vercel-test-mu-dusky.vercel.app");
         allowedOriginPatterns.add("https://focuscoach.click");
+        allowedOriginPatterns.add("http://127.0.0.1:5500");
 
         //허용한 http 메서드
         ArrayList<String> allowedHttpMethods = new ArrayList<>();
