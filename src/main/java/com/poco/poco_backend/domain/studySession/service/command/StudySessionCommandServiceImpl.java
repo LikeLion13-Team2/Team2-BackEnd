@@ -1,5 +1,9 @@
 package com.poco.poco_backend.domain.studySession.service.command;
 
+import com.poco.poco_backend.domain.member.entity.Member;
+import com.poco.poco_backend.domain.member.exception.MemberErrorCode;
+import com.poco.poco_backend.domain.member.exception.MemberException;
+import com.poco.poco_backend.domain.member.repository.MemberRepository;
 import com.poco.poco_backend.domain.studySession.converter.StudySessionConverter;
 import com.poco.poco_backend.domain.studySession.dto.request.StudySessionRequestDTO;
 import com.poco.poco_backend.domain.studySession.dto.response.StudySessionResponseDTO;
@@ -19,9 +23,13 @@ import java.util.List;
 public class StudySessionCommandServiceImpl implements StudySessionCommandService {
 
     private final StudySessionRepository studySessionRepository;
+    private final MemberRepository memberRepository;
 
     @Override
-    public StudySessionResponseDTO.CreateStudySessionResponseDTO createSession(StudySessionRequestDTO.CreateStudySessionRequestDTO createDTO) {
+    public StudySessionResponseDTO.CreateStudySessionResponseDTO createSession(StudySessionRequestDTO.CreateStudySessionRequestDTO createDTO, String email) {
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         // 총 세션 시간
         long sessionSeconds = Duration.between(createDTO.startedAt(), createDTO.endedAt()).toSeconds();
@@ -53,7 +61,7 @@ public class StudySessionCommandServiceImpl implements StudySessionCommandServic
                 .build();
 
         // 엔티티 생성 및 저장
-        StudySession session = StudySessionConverter.toStudySession(createDTO, calculations);
+        StudySession session = StudySessionConverter.toStudySession(createDTO, calculations, member);
         studySessionRepository.save(session);
 
         return StudySessionConverter.toStudySessionResponseDTO(session);

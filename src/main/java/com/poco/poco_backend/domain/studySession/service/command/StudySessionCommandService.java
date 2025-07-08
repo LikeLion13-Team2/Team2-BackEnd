@@ -5,6 +5,6 @@ import com.poco.poco_backend.domain.studySession.dto.response.StudySessionRespon
 
 public interface StudySessionCommandService {
 
-    StudySessionResponseDTO.CreateStudySessionResponseDTO createSession(StudySessionRequestDTO.CreateStudySessionRequestDTO createDTO);
+    StudySessionResponseDTO.CreateStudySessionResponseDTO createSession(StudySessionRequestDTO.CreateStudySessionRequestDTO createDTO, String email);
 
 }

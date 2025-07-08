@@ -4,9 +4,11 @@ import com.poco.poco_backend.domain.studySession.dto.request.StudySessionRequest
 import com.poco.poco_backend.domain.studySession.dto.response.StudySessionResponseDTO;
 import com.poco.poco_backend.domain.studySession.service.command.StudySessionCommandService;
 import com.poco.poco_backend.global.CustomResponse;
+import com.poco.poco_backend.global.security.auth.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,10 +32,10 @@ public class StudySessionController {
     )
     @PostMapping
     public CustomResponse<StudySessionResponseDTO.CreateStudySessionResponseDTO> createSession(
-            @RequestBody StudySessionRequestDTO.CreateStudySessionRequestDTO request
-            // TODO: @AuthenticationPrincipal 추가
+            @RequestBody StudySessionRequestDTO.CreateStudySessionRequestDTO request,
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        return CustomResponse.onSuccess(studySessionCommandService.createSession(request));
+        return CustomResponse.onSuccess(studySessionCommandService.createSession(request, userDetails.getUsername()));
     }
 
 }

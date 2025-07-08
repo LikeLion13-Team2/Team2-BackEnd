@@ -1,5 +1,6 @@
 package com.poco.poco_backend.domain.studySession.converter;
 
+import com.poco.poco_backend.domain.member.entity.Member;
 import com.poco.poco_backend.domain.studySession.dto.request.StudySessionRequestDTO;
 import com.poco.poco_backend.domain.studySession.dto.response.StudySessionResponseDTO;
 import com.poco.poco_backend.domain.studySession.entity.StudySession;
@@ -7,7 +8,8 @@ import com.poco.poco_backend.domain.studySession.entity.StudySession;
 public class StudySessionConverter {
 
     public static StudySession toStudySession(StudySessionRequestDTO.CreateStudySessionRequestDTO dto,
-                                       StudySessionRequestDTO.StudySessionCalculations calculations) {
+                                              StudySessionRequestDTO.StudySessionCalculations calculations,
+                                              Member member) {
         return StudySession.builder()
                 .title(dto.title())
                 .startedAt(dto.startedAt())
@@ -18,6 +20,7 @@ public class StudySessionConverter {
                 .breakSeconds(calculations.breakSeconds())
                 .longestFocusSeconds(calculations.longestFocusSeconds())
                 .focusScore(dto.focusScore())
+                .member(member)
                 .build();
     }
 
