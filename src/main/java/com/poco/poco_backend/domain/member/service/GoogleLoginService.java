@@ -8,19 +8,14 @@ import com.poco.poco_backend.domain.member.repository.TokenRepository;
 import com.poco.poco_backend.global.code.AuthErrorCode;
 import com.poco.poco_backend.global.security.auth.AuthException;
 import com.poco.poco_backend.global.security.auth.CustomUserDetails;
-import com.poco.poco_backend.global.security.auth.CustomUserDetailsService;
 import com.poco.poco_backend.global.security.jwt.JwtDTO;
 import com.poco.poco_backend.global.security.jwt.JwtUtil;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.http.converter.FormHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -29,8 +24,6 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -98,8 +91,6 @@ public class GoogleLoginService {
         body.add("grant_type", "authorization_code");
 
 
-
-
         HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(body, headers);
 
         log.info("Google Token Request Body = {}", body);
@@ -113,7 +104,6 @@ public class GoogleLoginService {
 
         } catch (Exception e) {
             log.error("[GoogleLoginService] Error occurred during token request", e);
-            e.printStackTrace();
             throw e;
         }
 
@@ -163,10 +153,13 @@ public class GoogleLoginService {
     }
 
     //Jwt 생성
-    public String createJwt(Member member) {
+    public JwtDTO createJwt(Member member) {
 
         CustomUserDetails newUserDetails = new CustomUserDetails(
                 member.getEmail(), member.getPassword(), member.getRoles());
+
+        //access 토큰 발급
+        String accessToken = jwtUtil.createJwtRefreshToken(newUserDetails);
 
         //refresh 토큰 발급
         String refreshToken = jwtUtil.createJwtRefreshToken(newUserDetails);
@@ -177,7 +170,10 @@ public class GoogleLoginService {
                 .build();
         tokenRepository.save(token);
 
-        return jwtUtil.createJwtAccessToken(newUserDetails);
+        return new JwtDTO(
+                accessToken,
+                refreshToken
+        );
     }
 
 
