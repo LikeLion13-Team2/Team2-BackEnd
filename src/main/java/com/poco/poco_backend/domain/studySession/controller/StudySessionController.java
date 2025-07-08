@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/study-sessions")
@@ -51,6 +53,20 @@ public class StudySessionController {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         return CustomResponse.onSuccess(HttpStatus.OK, studySessionQueryService.getStudySessionDetail(sessionId, userDetails.getUsername()));
+    }
+
+    @Operation(
+            summary = "학습 세션 리스트 조회",
+            description = """
+                    저장된 학습 세션 전체를 리스트로 조회합니다.\n
+                    세션 제목, 시작/종료 시각, 세션 전체 시간, 집중 시간, 딴짓 시간, 쉬는 시간, 최장 집중 시간, 집중 점수를 조회할 수 있습니다.
+                    """
+    )
+    @GetMapping
+    public CustomResponse<List<StudySessionResponseDTO.StudySessionDetailResponseDTO>> getStudySessions(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return CustomResponse.onSuccess(HttpStatus.OK, studySessionQueryService.getStudySessions(userDetails.getUsername()));
     }
 
 }

@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -27,6 +30,15 @@ public class StudySessionQueryServiceImpl implements StudySessionQueryService {
         }
 
         return StudySessionConverter.toStudySessionDetailResponseDTO(studySession);
+    }
+
+    @Override
+    public List<StudySessionResponseDTO.StudySessionDetailResponseDTO> getStudySessions(String email) {
+        List<StudySession> sessions = studySessionRepository.findAllByMemberEmail(email);
+
+        return sessions.stream()
+                .map(StudySessionConverter::toStudySessionDetailResponseDTO)
+                .collect(Collectors.toList());
     }
 
 }
