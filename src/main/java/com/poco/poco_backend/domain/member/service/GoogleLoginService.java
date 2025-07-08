@@ -52,6 +52,11 @@ public class GoogleLoginService {
 
     @PostConstruct
     private void initRestTemplate() {
+
+        log.info("[GoogleLoginService] clientId: {}", clientId);
+        log.info("[GoogleLoginService] clientSecret: {}", clientSecret);
+        log.info("[GoogleLoginService] redirectUri: {}", redirectUri);
+
         this.restTemplate = new RestTemplate();
         List<HttpMessageConverter<?>> converters = new ArrayList<>();
         converters.add(new FormHttpMessageConverter());
@@ -78,6 +83,8 @@ public class GoogleLoginService {
         body.add("client_secret", clientSecret);
         body.add("redirect_uri", redirectUri);
         body.add("grant_type", "authorization_code");
+
+
 
 
         HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(body, headers);
