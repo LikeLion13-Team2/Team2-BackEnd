@@ -92,8 +92,18 @@ public class GoogleLoginService {
         log.info("Google Token Request Body = {}", body);
         log.info("Google Token Headers = {}", headers);
 
-        ResponseEntity<Map> tokenResponse = restTemplate.postForEntity(
-                "https://oauth2.googleapis.com/token", tokenRequest, Map.class);
+        ResponseEntity<Map> tokenResponse = null;
+        try {
+            tokenResponse = restTemplate.postForEntity(
+                    "https://oauth2.googleapis.com/token", tokenRequest, Map.class);
+            log.info("Google Token Response: {}", tokenResponse.getBody());
+
+        } catch (Exception e) {
+            log.error("[GoogleLoginService] Error occurred during token request", e);
+            e.printStackTrace();
+            throw e;
+        }
+
 
         log.info("Google Token Request Body = {}", body);
         log.info("Google Token Headers = {}", headers);
