@@ -1,5 +1,6 @@
 package com.poco.poco_backend.global.Config;
 
+import com.poco.poco_backend.global.security.auth.CustomUserDetailsService;
 import com.poco.poco_backend.global.security.filter.JwtAuthorizationFilter;
 import com.poco.poco_backend.global.security.handler.JwtAccessDeniedHandler;
 import com.poco.poco_backend.global.security.handler.JwtAuthenticationEntryPoint;
@@ -35,6 +36,8 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     //인증 실패 핸들러
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    //CustomUserDetails 를 만들어주는 객체
+    private final CustomUserDetailsService customUserDetailsService;
 
 
 
@@ -64,7 +67,7 @@ public class SecurityConfig {
                         //그 외는 인증 필요
                         .anyRequest().authenticated())
                 //jwt인증 필터를 UsernamePasswordAuthenticationFilter 앞에 등록 -> 매 요청마다 jwt 유효성 검사하겠음
-                .addFilterBefore(new JwtAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthorizationFilter(jwtUtil, customUserDetailsService), UsernamePasswordAuthenticationFilter.class)
                 //기본 로그인 페이지 비활성화 (우리는 restapi로 처리하겠다.)
                 .formLogin(AbstractHttpConfigurer::disable)
                 //http basic 인증 비활성화
