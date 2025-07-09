@@ -24,18 +24,16 @@ import java.security.SignatureException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/oauth")
-@Tag(name = "구글 로그인 토큰 발급 api", description = "구글 로그인 토큰 발급 api입니다.")
+@Tag(name = "Member", description = "멤버 관련 API by 한민.")
 public class GoogleLoginController {
 
     private final GoogleLoginService googleLoginService;
 
-    private final JwtUtil jwtUtil;
-    private final TokenRepository tokenRepository;
-
+    //구글 로그인 api
     @Operation(summary = "구글 회원가입 및 로그인"
             , description = """
             클라이언트로부터 POST로 전달받은 인가 코드를 이용하여 구글로부터 accessToken을 발급 받습니다.\n
-            발급 받은 accessToken에서 사용자의 정보를 추출한 뒤, 서버 accessToken, refreshToken을 발급한 뒤, 
+            발급 받은 accessToken에서 사용자의 정보를 추출한 뒤, 서버 accessToken, refreshToken을 발급한 다음, 
             클라이언트로 전송합니다.            
             """
     )
@@ -61,24 +59,14 @@ public class GoogleLoginController {
         return CustomResponse.onSuccess(googleLoginService.reissueToken(jwtDto));
     }
 
-    @Transactional
+    //로그아웃 api
     @SecurityRequirement(name = "JWT TOKEN")
     @Operation(summary = "로그아웃", description = "로그아웃 api입니다.")
     @DeleteMapping("/logout")
     public CustomResponse<?> logout(HttpServletRequest request) throws SignatureException {
 
-        String accessToken = jwtUtil.resolveAccessToken(request);
+        googleLoginService.googleLogout(request);
 
-        log.info("[ Google Login Controller ] 토큰으로부터 이메일을 추출합니다..");
-
-        String email = jwtUtil.getEmail(accessToken);
-
-        log.info("[ Google Login Controller ] 로그아웃을 진행합니다.");
-
-        tokenRepository.deleteByEmail(email);
-
-        log.info("[ Google Login Controller ] 로그아웃이 완료 되었습니다..");
-
-        return CustomResponse.onSuccess("로그아웃 되었습니다.");
+        return CustomResponse.onSuccess("로그아웃 성공");
     }
 }
