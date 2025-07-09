@@ -67,9 +67,4 @@ public class GoogleLoginController {
         return CustomResponse.onSuccess("로그아웃 성공");
     }
 
-    //헬스체크
-    @GetMapping
-    public CustomResponse<?> healthCheck() {
-        return CustomResponse.onSuccess("Server is healthy!");
-    }
 }
