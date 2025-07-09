@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.poco.poco_backend.common.entity.BaseTimeEntity;
 import com.poco.poco_backend.domain.report.entity.Report;
 import com.poco.poco_backend.domain.studySession.entity.StudySession;
+import com.poco.poco_backend.global.security.auth.Roles;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,7 +34,8 @@ public class Member extends BaseTimeEntity {
     private String email;
 
     @Column(name = "roles")
-    private String roles;
+    @Enumerated(EnumType.STRING)
+    private Roles roles;
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Token token;

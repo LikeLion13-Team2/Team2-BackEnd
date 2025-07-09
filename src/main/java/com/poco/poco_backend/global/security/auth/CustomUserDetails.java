@@ -16,10 +16,10 @@ public class CustomUserDetails implements UserDetails {
     //일반 로그인을 구현할 경우를 대비한 주석처리
     private final String password;
 
-    private final String roles;
+    private final Roles roles;
 
     //생성자
-    public CustomUserDetails(String email, String password, String roles) {
+    public CustomUserDetails(String email, String password, Roles roles) {
         this.email = email;
         this.password = password;
         this.roles = roles;
@@ -32,7 +32,7 @@ public class CustomUserDetails implements UserDetails {
     //SimpleGrantedAuthority -> GrantedAuthority의 구현체로, role을 받아 권한의 자격을 부여하는 느낌
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(roles));
+        authorities.add(new SimpleGrantedAuthority(roles.name()));
         return authorities;
     }
 

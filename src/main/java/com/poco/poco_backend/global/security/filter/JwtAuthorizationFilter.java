@@ -51,6 +51,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
 
             // 3. Access Token을 이용한 인증 처리
+            //토큰 유효성 검증 -> CustomUserDetails 생성 -> 인증 객체 생성
             authenticateAccessToken(accessToken);
             log.info("[ JwtAuthorizationFilter ] 종료. 다음 필터로 넘어갑니다.");
             filterChain.doFilter(request, response);
@@ -89,9 +90,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         log.info("[ JwtAuthorizationFilter ] UserDetails 객체 생성 성공");
 
         // 3. 인증 객체 생성 및 SecurityContextHolder에 저장
+        //이 인증 객체를 바탕으로 이후 컨트롤러에 접근할 수 있도록 인가
         Authentication authToken = new UsernamePasswordAuthenticationToken(
                 userDetails,
-                null,
+                null,  //원래는 password가 들어가야 하지만, 여기선 null
                 userDetails.getAuthorities()
         );
         SecurityContextHolder.getContext().setAuthentication(authToken);
