@@ -1,9 +1,11 @@
 package com.poco.poco_backend.domain.studySession.service.command;
 
+import com.poco.poco_backend.common.enums.PeriodType;
 import com.poco.poco_backend.domain.member.entity.Member;
 import com.poco.poco_backend.domain.member.exception.MemberErrorCode;
 import com.poco.poco_backend.domain.member.exception.MemberException;
 import com.poco.poco_backend.domain.member.repository.MemberRepository;
+import com.poco.poco_backend.domain.report.service.command.ReportCommandService;
 import com.poco.poco_backend.domain.studySession.converter.StudySessionConverter;
 import com.poco.poco_backend.domain.studySession.dto.request.StudySessionRequestDTO;
 import com.poco.poco_backend.domain.studySession.dto.response.StudySessionResponseDTO;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -26,6 +29,7 @@ public class StudySessionCommandServiceImpl implements StudySessionCommandServic
 
     private final StudySessionRepository studySessionRepository;
     private final MemberRepository memberRepository;
+    private final ReportCommandService reportCommandService;
 
     @Override
     public StudySessionResponseDTO.CreateStudySessionResponseDTO createSession(StudySessionRequestDTO.CreateStudySessionRequestDTO createDTO, String email) {
@@ -65,6 +69,12 @@ public class StudySessionCommandServiceImpl implements StudySessionCommandServic
         // 엔티티 생성 및 저장
         StudySession session = StudySessionConverter.toStudySession(createDTO, calculations, member);
         studySessionRepository.save(session);
+        // 리포트 자동 갱신
+        LocalDate baseDate = session.getStartedAt().toLocalDate();
+        for (PeriodType periodType : PeriodType.values()) {
+            reportCommandService.updateOrCreateReport(member, periodType, baseDate);
+        }
+
 
         return StudySessionConverter.toStudySessionResponseDTO(session);
 
