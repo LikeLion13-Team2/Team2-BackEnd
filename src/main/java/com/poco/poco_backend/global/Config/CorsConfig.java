@@ -45,8 +45,6 @@ public class CorsConfig implements WebMvcConfigurer {
         allowedHttpMethods.add("PUT");
         allowedHttpMethods.add("DELETE");*/
 
-        //허용할 헤더(Authorization = jwt, content_type = json)
-        configuration.setAllowedHeaders(List.of(HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_TYPE));
 
         //쿠키/인증정보 포함 허용
         configuration.setAllowCredentials(true);
