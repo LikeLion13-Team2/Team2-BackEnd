@@ -2,6 +2,7 @@ package com.poco.poco_backend.global.security.filter;
 
 
 import com.poco.poco_backend.global.security.auth.CustomUserDetails;
+import com.poco.poco_backend.global.security.auth.CustomUserDetailsService;
 import com.poco.poco_backend.global.security.jwt.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -24,7 +26,11 @@ import java.security.SignatureException;
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
+
     private final JwtUtil jwtUtil;
+
+    private final CustomUserDetailsService customUserDetailsService;
+
     // JWT 관련 유틸리티 클래스 주입
     @Override
     protected void doFilterInternal(
@@ -70,11 +76,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         log.info("[ JwtAuthorizationFilter ] Access Token 유효성 검증 성공. ");
 
         // 2. Access Token에서 사용자 정보 추출 후 CustomUserDetails 생성
-        CustomUserDetails userDetails = new CustomUserDetails(
+        //2-1. 이메일 추출
+        String email = jwtUtil.getEmail(accessToken);
+
+        CustomUserDetails userDetails = (CustomUserDetails)customUserDetailsService.loadUserByUsername(email);
+
+
+        /*CustomUserDetails userDetails = new CustomUserDetails(
                 jwtUtil.getEmail(accessToken),
                 null,
                 jwtUtil.getRoles(accessToken)
-        );
+        );*/
         log.info("[ JwtAuthorizationFilter ] UserDetails 객체 생성 성공");
 
         // 3. 인증 객체 생성 및 SecurityContextHolder에 저장
