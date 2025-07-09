@@ -1,9 +1,11 @@
 package com.poco.poco_backend.domain.studySession.entity;
 
+import com.poco.poco_backend.common.enums.PeriodType;
 import com.poco.poco_backend.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,6 +30,9 @@ public class StudySession {
     private LocalDateTime endedAt;
 
     private Double focusScore;
+
+    private PeriodType periodType;
+    private LocalDate baseDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
