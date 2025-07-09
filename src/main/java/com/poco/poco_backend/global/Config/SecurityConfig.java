@@ -5,6 +5,7 @@ import com.poco.poco_backend.global.security.handler.JwtAccessDeniedHandler;
 import com.poco.poco_backend.global.security.handler.JwtAuthenticationEntryPoint;
 import com.poco.poco_backend.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +17,7 @@ import org.springframework.security.config.annotation.web.configurers.HttpBasicC
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 //해당 클래스는 스프링 설정 클래스임
 @Configuration
@@ -35,6 +37,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 
+
     //인증이 필요하지 않은 url
     private final String[] allowUrl = {
             "/api/login", //로그인 은 인증이 필요하지 않음
@@ -50,7 +53,8 @@ public class SecurityConfig {
     };
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           @Qualifier("apiConfigurationSource") CorsConfigurationSource corsConfigurationSource) throws Exception{
 
         http
                 //요청 url별  접근 권한 설정
@@ -72,7 +76,7 @@ public class SecurityConfig {
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 // cors
-                .cors(cors -> cors.configurationSource(CorsConfig.apiConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource));
         ;
 
         //최종 SecurityFilterChain 객체 생성
