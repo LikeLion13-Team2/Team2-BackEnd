@@ -21,10 +21,11 @@ public class CorsConfig implements WebMvcConfigurer {
 
         //허용할 Origin (요청을 받아들일 출처)
         configuration.setAllowedOriginPatterns(List.of(
-                "http://localhost:*",
+                "http://localhost:5500",
+                "http://localhost:8080",
                 "https://*.vercel.app",
                 "https://focuscoach.click",
-                "http://127.0.0.1:*"
+                "http://127.0.0.1:5500*"
         ));
         /*ArrayList<String> allowedOriginPatterns = new ArrayList<>();
         allowedOriginPatterns.add("http://localhost:8080");
