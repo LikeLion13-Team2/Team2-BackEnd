@@ -51,7 +51,8 @@ public class SecurityConfig {
             "/swagger-ui/**",   // swagger 관련 URL
             "/v3/api-docs/**", // swagger api 문서
             "/callback/kakao",  //소셜 로그인 콜백
-            "/api/v1/emails" //이메일 관련 api
+            "/api/v1/emails", //이메일 관련 api
+
     };
 
     @Bean

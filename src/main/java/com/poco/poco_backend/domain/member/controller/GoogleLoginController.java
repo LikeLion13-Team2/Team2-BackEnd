@@ -3,17 +3,14 @@ package com.poco.poco_backend.domain.member.controller;
 import com.poco.poco_backend.domain.member.dto.request.CodeDTO;
 import com.poco.poco_backend.domain.member.dto.request.GoogleMemberDTO;
 import com.poco.poco_backend.domain.member.entity.Member;
-import com.poco.poco_backend.domain.member.repository.TokenRepository;
 import com.poco.poco_backend.domain.member.service.GoogleLoginService;
 import com.poco.poco_backend.global.CustomResponse;
 import com.poco.poco_backend.global.security.jwt.JwtDTO;
-import com.poco.poco_backend.global.security.jwt.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -68,5 +65,11 @@ public class GoogleLoginController {
         googleLoginService.googleLogout(request);
 
         return CustomResponse.onSuccess("로그아웃 성공");
+    }
+
+    //헬스체크
+    @GetMapping
+    public CustomResponse<?> healthCheck() {
+        return CustomResponse.onSuccess("Server is healthy!");
     }
 }
