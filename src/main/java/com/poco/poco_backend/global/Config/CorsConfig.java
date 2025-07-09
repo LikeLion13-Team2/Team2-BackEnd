@@ -18,44 +18,18 @@ public class CorsConfig implements WebMvcConfigurer {
     public CorsConfigurationSource apiConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-
-        //허용할 Origin (요청을 받아들일 출처)
-        configuration.setAllowedOriginPatterns(List.of(
-                "http://localhost:5500",
-                "http://localhost:8080",
-                "https://*.vercel.app",
-                "https://focuscoach.click",
-                "http://127.0.0.1:5500*"
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:3000/",
+                "https://focuscoach.click/",
+                "https://your-vercel.vercel.app/",
+                "http://localhost:3000"
         ));
-        /*ArrayList<String> allowedOriginPatterns = new ArrayList<>();
-        allowedOriginPatterns.add("http://localhost:8080");
-        allowedOriginPatterns.add("http://localhost:3000");
-        allowedOriginPatterns.add("https://vercel-test-mu-dusky.vercel.app");
-        allowedOriginPatterns.add("https://focuscoach.click");
-        allowedOriginPatterns.add("http://127.0.0.1:5500");*/
 
-        //허용한 http 메서드
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        /*ArrayList<String> allowedHttpMethods = new ArrayList<>();
-        allowedHttpMethods.add("GET");
-        allowedHttpMethods.add("POST");
-        allowedHttpMethods.add("PUT");
-        allowedHttpMethods.add("DELETE");*/
-
-
-        //쿠키/인증정보 포함 허용
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowCredentials(true);
-
-        //위에서 허용하기로 한 요소들을 실제로 등록
-        /*configuration.setAllowedOrigins(allowedOriginPatterns);
-        configuration.setAllowedMethods(allowedHttpMethods);*/
-
-        //요청 시 허용할 수 있는 헤더 설정
-        //configuration.setAllowedHeaders(Collections.singletonList("*"));
-        //Authorization = jwt, content_type = json
         configuration.setAllowedHeaders(List.of(HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_TYPE));
+        configuration.setExposedHeaders(List.of("Authorization")); // 필요 시 추가
 
-        //위 설정을 전체 경로에 적용
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 
