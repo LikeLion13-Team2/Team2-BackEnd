@@ -22,4 +22,8 @@ public class ReportSession {
     @JoinColumn(name = "session_id")
     private StudySession studySession;
 
+    public ReportSession(Report report, StudySession studySession) {
+        this.report = report;
+        this.studySession = studySession;
+    }
 }

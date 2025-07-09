@@ -15,6 +15,7 @@ java {
 
 repositories {
 	mavenCentral()
+	maven { url "https://repo.spring.io/milestone" }
 }
 
 dependencies {
@@ -49,6 +50,8 @@ dependencies {
 	// Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
+	// Spring AI
+	implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter:0.8.0'
 }
 
 // jar 파일 하나만 생성하게 하는거
