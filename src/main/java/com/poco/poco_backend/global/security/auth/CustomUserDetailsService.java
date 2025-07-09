@@ -36,7 +36,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         //isPresent -> Optional에 실제로 값이 있는지 없는지 boolean값 반환
         //userEntity안에 값이 있으면~
         //위에서 만든 userEntity에서 값을 필드들을 뽑아냄
-        //CustomUserDetails에 뽑아낸 필드들을 집어넣음
+        //CustomUserDetails에 뽑아낸 필드들(email, password,roles)을 집어넣음
         if (userEntity.isPresent()) {
             Member member = userEntity.get();
             return new CustomUserDetails(member.getEmail(),member.getPassword(), member.getRoles());

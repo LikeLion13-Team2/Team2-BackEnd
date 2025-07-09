@@ -3,6 +3,7 @@ package com.poco.poco_backend.global.security.jwt;
 import com.poco.poco_backend.domain.member.entity.Token;
 import com.poco.poco_backend.domain.member.repository.TokenRepository;
 import com.poco.poco_backend.global.security.auth.CustomUserDetails;
+import com.poco.poco_backend.global.security.auth.Roles;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -52,18 +53,23 @@ public class JwtUtil {
         return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
-                .parseEncryptedClaims(token)
+                .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
     }
     //토큰에서 role추출
-    public String getRoles(String token) throws SignatureException {
-        return Jwts.parser()
+    public Roles getRoles(String token) throws SignatureException {
+        String roleStr = Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
-                .get("role", String.class);
+                .get("role", String.class);  //문자열 형태인 Role을 enum으로 반환
+        try {
+            return Roles.valueOf(roleStr);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new SignatureException("유효하지 않은 Role 값입니다.");
+        }
     }
 
     public String tokenProvider(CustomUserDetails customUserDetails, Instant expiration) {
@@ -157,21 +163,22 @@ public class JwtUtil {
                     .clockSkewSeconds(seconds)
                     .verifyWith(secretKey)
                     .build()
-                    .parseEncryptedClaims(token)
+                    .parseSignedClaims(token)
                     .getPayload()
                     .getExpiration()
                     .before(new Date());
+            // 만료된 경우 예외 발생
             if (isExpired) {
-                log.info("만료된 JWT 토큰입니다.");
+                log.warn("만료된 JWT 토큰입니다.");
+                throw new ExpiredJwtException(null, null, "JWT 토큰이 만료되었습니다.");
             }
-        } catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-            //원하는 Exception throw
-            throw new SecurityException("잘못된 토큰입니다");
         } catch (ExpiredJwtException e) {
-            //원하는 Exception throw
+            // JWT 라이브러리 내부에서 토큰 만료가 감지된 경우
+            log.warn("[ JwtUtil ] JWT 토큰이 만료되었습니다.");
             throw new ExpiredJwtException(null, null, "만료된 JWT 토큰입니다.");
+        } catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+            throw new SecurityException("잘못된 토큰입니다");
+
         }
     }
-
-
 }

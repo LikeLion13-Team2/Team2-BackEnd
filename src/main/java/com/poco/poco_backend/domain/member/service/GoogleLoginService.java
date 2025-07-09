@@ -8,8 +8,11 @@ import com.poco.poco_backend.domain.member.repository.TokenRepository;
 import com.poco.poco_backend.global.code.AuthErrorCode;
 import com.poco.poco_backend.global.security.auth.AuthException;
 import com.poco.poco_backend.global.security.auth.CustomUserDetails;
+import com.poco.poco_backend.global.security.auth.CustomUserDetailsService;
+import com.poco.poco_backend.global.security.auth.Roles;
 import com.poco.poco_backend.global.security.jwt.JwtDTO;
 import com.poco.poco_backend.global.security.jwt.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -47,7 +50,8 @@ public class GoogleLoginService {
             JwtUtil jwtUtil,
             TokenRepository tokenRepository,
             MemberRepository memberRepository,
-            RestTemplateBuilder restTemplateBuilder
+            RestTemplateBuilder restTemplateBuilder,
+            CustomUserDetailsService customUserDetailsService
     ) {
         this.jwtUtil = jwtUtil;
         this.tokenRepository = tokenRepository;
@@ -140,13 +144,14 @@ public class GoogleLoginService {
 
     //추출한 내용을 바탕으로 db에서 해당 유저를 조회한 후, 없으면 생성
     public Member signupOrGetMember(GoogleMemberDTO googleMemberDto) {
+
         return memberRepository.findByEmail(googleMemberDto.email())
                 .orElseGet(() -> {
                     Member newMember = Member.builder()
                             .email(googleMemberDto.email())
                             .name(googleMemberDto.name())
                             .password("")
-                            .roles("ROLE_USER")
+                            .roles(Roles.ROLE_USER)
                             .build();
                     return memberRepository.save(newMember);
                 });
@@ -155,11 +160,14 @@ public class GoogleLoginService {
     //Jwt 생성
     public JwtDTO createJwt(Member member) {
 
-        CustomUserDetails newUserDetails = new CustomUserDetails(
-                member.getEmail(), member.getPassword(), member.getRoles());
+        CustomUserDetailsService customUserDetailsService =
+                new CustomUserDetailsService(memberRepository);
+
+        CustomUserDetails newUserDetails =
+                (CustomUserDetails)customUserDetailsService.loadUserByUsername(member.getEmail());
 
         //access 토큰 발급
-        String accessToken = jwtUtil.createJwtRefreshToken(newUserDetails);
+        String accessToken = jwtUtil.createJwtAccessToken(newUserDetails);
 
         //refresh 토큰 발급
         String refreshToken = jwtUtil.createJwtRefreshToken(newUserDetails);
