@@ -5,6 +5,7 @@ import com.poco.poco_backend.domain.member.entity.Member;
 import com.poco.poco_backend.domain.report.converter.ReportConverter;
 import com.poco.poco_backend.domain.report.entity.Report;
 import com.poco.poco_backend.domain.report.repository.ReportRepository;
+import com.poco.poco_backend.domain.report.service.ReportCommentService;
 import com.poco.poco_backend.domain.studySession.entity.StudySession;
 import com.poco.poco_backend.domain.studySession.exception.StudySessionErrorCode;
 import com.poco.poco_backend.domain.studySession.exception.StudySessionException;
@@ -18,13 +19,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class ReportCommandServiceImpl {
 @RequiredArgsConstructor
 @Transactional
 public class ReportCommandServiceImpl implements ReportCommandService {
 
     private final ReportRepository reportRepository;
     private final StudySessionRepository studySessionRepository;
+    private final ReportCommentService reportCommentService;
 
     public void updateOrCreateReport(Member member, PeriodType periodType, LocalDate baseDate) {
 
@@ -68,6 +69,10 @@ public class ReportCommandServiceImpl implements ReportCommandService {
                 longestFocusSeconds,
                 avgFocusScore
         );
+
+        // AI Comment 생성
+        String comment = reportCommentService.generateComment(ReportConverter.toReportData(sessions));
+        report.updateComment(comment);
 
         reportRepository.save(report);
 
