@@ -22,7 +22,11 @@ public class CorsConfig implements WebMvcConfigurer {
                 "http://localhost:3000/",
                 "https://focuscoach.click/",
                 "https://your-vercel.vercel.app/",
-                "http://localhost:3000"
+                "http://localhost:3000",
+                "http://localhost:5500/",
+                "http://localhost:5500",
+                "http://127.0.0.1:5500/",
+                "http://127.0.0.1:5500"
         ));
 
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
