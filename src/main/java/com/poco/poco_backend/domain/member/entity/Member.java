@@ -46,4 +46,18 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Report> reports = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberGoal> memberGoals = new ArrayList<>();
+
+    //memberGoal을 memberGoals 리스트에 추가
+    public void addGoal(Goal goal) {
+        MemberGoal memberGoal = new MemberGoal(this, goal);
+        memberGoals.add(memberGoal);
+    }
+
+    //goalName을 넣으면 해당 이름을 가진 Goal 객체를 가진 요소를 삭제
+    public void deleteGoal(String goalName) {
+        memberGoals.removeIf(mg -> mg.getGoal().getGoalName().equals(goalName));
+    }
+
 }

@@ -25,7 +25,6 @@ import java.security.SignatureException;
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-
     private final JwtUtil jwtUtil;
 
     private final CustomUserDetailsService customUserDetailsService;
@@ -87,6 +86,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 null,
                 jwtUtil.getRoles(accessToken)
         );*/
+
         log.info("[ JwtAuthorizationFilter ] UserDetails 객체 생성 성공");
 
         // 3. 인증 객체 생성 및 SecurityContextHolder에 저장

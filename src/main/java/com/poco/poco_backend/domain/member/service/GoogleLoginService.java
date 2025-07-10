@@ -47,9 +47,6 @@ public class GoogleLoginService {
     private final MemberRepository memberRepository;
     private RestTemplate restTemplate;
 
-
-
-
     public GoogleLoginService (
             JwtUtil jwtUtil,
             TokenRepository tokenRepository,
@@ -63,22 +60,6 @@ public class GoogleLoginService {
         this.restTemplate = restTemplateBuilder.messageConverters(new FormHttpMessageConverter(),
                 new MappingJackson2HttpMessageConverter()).build();
     }
-
-    /*@PostConstruct
-    private void initRestTemplate() {
-
-        log.info("[GoogleLoginService] clientId: {}", clientId);
-        log.info("[GoogleLoginService] clientSecret: {}", clientSecret);
-        log.info("[GoogleLoginService] redirectUri: {}", redirectUri);
-
-        this.restTemplate = new RestTemplate();
-        List<HttpMessageConverter<?>> converters = new ArrayList<>();
-        converters.add(new FormHttpMessageConverter());
-        converters.add(new MappingJackson2HttpMessageConverter());
-        converters.addAll(restTemplate.getMessageConverters());
-
-        this.restTemplate.setMessageConverters(converters);
-    }*/
 
     //code로 access token 요청 (사용자 정보 반환)
     public GoogleMemberDTO getMemberInfo(String code) {
