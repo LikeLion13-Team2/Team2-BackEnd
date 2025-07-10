@@ -14,5 +14,5 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
 
     @Modifying
     @Query("DELETE FROM Token m WHERE m.email = :email")
-    void deleteByEmail(@Param("email") String email);
+    int deleteByEmail(@Param("email") String email);
 }
