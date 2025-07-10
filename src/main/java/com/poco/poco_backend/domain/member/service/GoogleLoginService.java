@@ -14,7 +14,6 @@ import com.poco.poco_backend.global.security.jwt.JwtDTO;
 import com.poco.poco_backend.global.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -80,20 +79,6 @@ public class GoogleLoginService {
 
         this.restTemplate.setMessageConverters(converters);
     }*/
-
-
-    public void googleLogout(HttpServletRequest request) throws SignatureException {
-
-        String accessToken = jwtUtil.resolveAccessToken(request);
-
-        log.info("[ Google Login Controller ] 토큰으로부터 이메일을 추출합니다.");
-        String email = jwtUtil.getEmail(accessToken);
-
-        log.info("[ Google Login Controller ] 로그아웃을 진행합니다.");
-        tokenRepository.deleteByEmail(email);
-
-        log.info("[ Google Login Controller ] 로그아웃이 완료 되었습니다..");
-    }
 
     //code로 access token 요청 (사용자 정보 반환)
     public GoogleMemberDTO getMemberInfo(String code) {

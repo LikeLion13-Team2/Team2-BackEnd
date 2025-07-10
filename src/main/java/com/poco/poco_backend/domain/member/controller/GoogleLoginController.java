@@ -7,9 +7,7 @@ import com.poco.poco_backend.domain.member.service.GoogleLoginService;
 import com.poco.poco_backend.global.CustomResponse;
 import com.poco.poco_backend.global.security.jwt.JwtDTO;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +19,7 @@ import java.security.SignatureException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/oauth")
-@Tag(name = "Member", description = "멤버 관련 API by 한민.")
+@Tag(name = "Google Login", description = "구글 로그인 관련 API by 한민.")
 public class GoogleLoginController {
 
     private final GoogleLoginService googleLoginService;
@@ -55,16 +53,4 @@ public class GoogleLoginController {
 
         return CustomResponse.onSuccess(googleLoginService.reissueToken(jwtDto));
     }
-
-    //로그아웃 api
-    @SecurityRequirement(name = "JWT TOKEN")
-    @Operation(summary = "로그아웃", description = "로그아웃 api입니다.")
-    @DeleteMapping("/logout")
-    public CustomResponse<?> logout(HttpServletRequest request) throws SignatureException {
-
-        googleLoginService.googleLogout(request);
-
-        return CustomResponse.onSuccess("로그아웃 성공");
-    }
-
 }
