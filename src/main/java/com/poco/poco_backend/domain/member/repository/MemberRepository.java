@@ -24,7 +24,4 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     int updateMemberByEmail(@Param("email") String email,
                             @Param("newName") String newName);
 
-
-
-
 }
