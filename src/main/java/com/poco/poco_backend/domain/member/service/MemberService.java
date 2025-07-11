@@ -141,8 +141,10 @@ public class MemberService {
         //Goal이 담긴 리스트에서 이름이 같은 것이 있으면 스킵
         boolean alreadyExists = member.getMemberGoals().stream()
                 .anyMatch(mg -> mg.getGoal().getGoalName().equals(goalName));
-        if (!alreadyExists)
+        if (!alreadyExists) {
             member.addGoal(newGoal);
+            log.info("[ setMemberGoal ] 새로운 goal: {}을(를) 추가했습니다.", goalName);
+        }
     }
 
     @Transactional
