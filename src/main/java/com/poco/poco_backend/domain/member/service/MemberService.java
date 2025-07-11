@@ -132,11 +132,14 @@ public class MemberService {
     @Transactional
     public void setMemberGoal(String email, String goalName) throws SignatureException {
 
+        //멤버 가져오기
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
+        //목표 필드가 없으면 만들고 가져오기
         Goal newGoal = goalRepository.findGoalByGoalName(goalName)
                 .orElseGet(() -> goalRepository.save(new Goal(goalName)));
+
 
         //Goal이 담긴 리스트에서 이름이 같은 것이 있으면 스킵
         boolean alreadyExists = member.getMemberGoals().stream()

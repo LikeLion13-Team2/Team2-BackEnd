@@ -55,6 +55,10 @@ public class Member extends BaseTimeEntity {
         memberGoals.add(memberGoal);
     }
 
+    public void resetGoal() {
+        memberGoals.clear();
+    }
+
     //goalName을 넣으면 해당 이름을 가진 Goal 객체를 가진 요소를 삭제
     public void deleteGoal(String goalName) {
         memberGoals.removeIf(mg -> mg.getGoal().getGoalName().equals(goalName));
