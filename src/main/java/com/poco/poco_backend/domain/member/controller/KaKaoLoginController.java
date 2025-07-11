@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.poco.poco_backend.global.CustomResponse.onSuccess;
 
 @Slf4j
 @RestController

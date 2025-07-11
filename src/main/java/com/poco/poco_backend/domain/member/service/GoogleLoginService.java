@@ -96,7 +96,6 @@ public class GoogleLoginService {
             throw e;
         }
 
-
         log.info("Google Token Request Body = {}", body);
         log.info("Google Token Headers = {}", headers);
 

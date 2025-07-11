@@ -36,6 +36,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+
+        String uri = request.getRequestURI();
+        if (uri.equals("/favicon.ico") || uri.startsWith("/swagger") || uri.startsWith("/v3/api-docs")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         log.info("[ JwtAuthorizationFilter ] 인가 필터 작동");
 
         try {

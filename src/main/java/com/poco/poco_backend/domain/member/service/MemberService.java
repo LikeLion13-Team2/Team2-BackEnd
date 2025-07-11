@@ -10,11 +10,13 @@ import com.poco.poco_backend.domain.member.repository.TokenRepository;
 import com.poco.poco_backend.domain.report.repository.ReportRepository;
 import com.poco.poco_backend.domain.studySession.repostitory.StudySessionRepository;
 import com.poco.poco_backend.global.exception.CustomException;
+import com.poco.poco_backend.global.security.auth.CustomUserDetails;
 import com.poco.poco_backend.global.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SignatureException;
 import java.util.List;
@@ -50,12 +52,7 @@ public class MemberService {
 
     //로그아웃 메서드
     @Transactional
-    public void memberLogout(HttpServletRequest request) throws SignatureException {
-
-        String accessToken = jwtUtil.resolveAccessToken(request);
-
-        log.info("[ Logout ] 토큰으로부터 이메일을 추출합니다.");
-        String email = jwtUtil.getEmail(accessToken);
+    public void memberLogout(String email) throws SignatureException {
 
         log.info("[ Logout ] 로그아웃을 진행합니다.");
         int deletedTokenCount = tokenRepository.deleteByEmail(email);
@@ -68,12 +65,7 @@ public class MemberService {
 
     //회원탈퇴 메서드
     @Transactional
-    public void deleteMember(HttpServletRequest request) throws SignatureException {
-
-        String accessToken = jwtUtil.resolveAccessToken(request);
-
-        log.info("[ Delete Member ] 토큰으로부터 이메일을 추출합니다.");
-        String email = jwtUtil.getEmail(accessToken);
+    public void deleteMember(String email) throws SignatureException {
 
         log.info("[ Delete Member ] 회원 탈퇴를 진행합니다.");
 
@@ -102,13 +94,8 @@ public class MemberService {
 
     }
 
-    @Transactional
-    public MemberResponseDTO.MemberWithGoalsResponse getMemberInfo(HttpServletRequest request) throws SignatureException {
-
-        String accessToken = jwtUtil.resolveAccessToken(request);
-
-        log.info("[ getMemberInfo ] 토큰으로부터 이메일을 추출합니다.");
-        String email = jwtUtil.getEmail(accessToken);
+    @Transactional(readOnly = true)
+    public MemberResponseDTO.MemberWithGoalsResponse getMemberInfo(String email) throws SignatureException {
 
         log.info("[ getMemberInfo ] email 을 기반으로 member 를 추출합니다.");
         Member member = memberRepository.findByEmail(email)
@@ -128,12 +115,7 @@ public class MemberService {
 
     //이름 변경
     @Transactional
-    public void changeMemberName(HttpServletRequest request, String newName) throws SignatureException {
-
-        String accessToken = jwtUtil.resolveAccessToken(request);
-
-        log.info("[ changeMemberName ] 토큰으로부터 이메일을 추출합니다.");
-        String email = jwtUtil.getEmail(accessToken);
+    public void changeMemberName(String email, String newName) throws SignatureException {
 
         int nameChanged = memberRepository.updateMemberByEmail(email, newName);
 
@@ -144,11 +126,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void setMemberGoal(HttpServletRequest request, String goalName) throws SignatureException {
-
-        String accessToken = jwtUtil.resolveAccessToken(request);
-
-        String email = jwtUtil.getEmail(accessToken);
+    public void setMemberGoal(String email, String goalName) throws SignatureException {
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
@@ -164,9 +142,8 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteMemberGoal(HttpServletRequest request, String goalName) throws SignatureException {
-        String accessToken = jwtUtil.resolveAccessToken(request);
-        String email = jwtUtil.getEmail(accessToken);
+    public void deleteMemberGoal(String email, String goalName) throws SignatureException {
+
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
