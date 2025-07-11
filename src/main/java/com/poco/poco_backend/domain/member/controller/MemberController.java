@@ -74,17 +74,19 @@ public class MemberController {
             access_token 정보를 바탕으로 회원의 email, goal 을 반환합니다.
             """)
     @GetMapping("/me")
-    public CustomResponse<?> getMemberInfo(HttpServletRequest request)
+    public CustomResponse<?> getMemberInfo(@AuthenticationPrincipal CustomUserDetails userDetails)
             throws SignatureException {
 
-        return CustomResponse.onSuccess(memberService.getMemberInfo(request));
+        String email = userDetails.getUsername();
+
+        return CustomResponse.onSuccess(memberService.getMemberInfo(email));
     }
 
 
     //프로필 변경 api
     @SecurityRequirement(name = "JWT TOKEN")
     @Operation(summary = "회원 프로필 변경", description = "회원가입 페이지에서 사용하는 회원 프로필 변경 api 입니다.")
-    @PatchMapping("/profile")
+    @PutMapping("/profile")
     public CustomResponse<?> changeNameGoal(@AuthenticationPrincipal CustomUserDetails userDetails,
                                             @RequestBody GoalDTO.UpdateProfileDTO updateProfileDTO)
             throws SignatureException {
@@ -121,7 +123,7 @@ public class MemberController {
     //사용자 이름 변경
     @SecurityRequirement(name = "JWT TOKEN")
     @Operation(summary = "회원 이름 변경", description = "회원 이름 변경 api 입니다.")
-    @PatchMapping("/name")
+    @PutMapping("/name")
     public CustomResponse<?> changeName(@AuthenticationPrincipal CustomUserDetails userDetails,
                                         @RequestBody MemberRequestDTO.ChangeNameDTO changeNameDTO)
             throws SignatureException {

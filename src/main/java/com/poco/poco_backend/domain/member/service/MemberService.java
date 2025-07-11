@@ -94,12 +94,8 @@ public class MemberService {
 
     //회원 조회
     @Transactional(readOnly = true)
-    public MemberResponseDTO.MemberWithGoalsResponse getMemberInfo(HttpServletRequest request) throws SignatureException {
+    public MemberResponseDTO.MemberWithGoalsResponse getMemberInfo(String email) throws SignatureException {
 
-
-        String accessToken = jwtUtil.resolveAccessToken(request);
-
-        String email = jwtUtil.getEmail(accessToken);
 
         log.info("[ getMemberInfo ] email 을 기반으로 member 를 추출합니다.");
         Member member = memberRepository.findByEmail(email)
