@@ -137,7 +137,8 @@ public class GoogleLoginService {
                             .password("")
                             .roles(Roles.ROLE_USER)
                             .build();
-                    return memberRepository.save(newMember);
+                    memberRepository.save(newMember);
+                    return newMember;
                 });
     }
 
