@@ -21,6 +21,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.SignatureException;
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -98,9 +100,18 @@ public class MemberController {
                                      @RequestBody GoalDTO.UpdateGoalDTO updateGoalDTO)
             throws SignatureException {
 
-        String goalName = updateGoalDTO.goalName();
+        int goalCount = 0;
 
-        memberService.setMemberGoal(userDetails.getUsername(), goalName);
+        //문자열을 리스트 형태로 파싱
+        String[] goalList = updateGoalDTO.goalNames().split(",");
+
+        //파싱한 리스트 마다 멤버의 목표에 추가
+        for (String goal : goalList) {
+            memberService.setMemberGoal(userDetails.getUsername(), goal);
+            goalCount++;
+        }
+
+        log.info("[ setGoal ] 목표 {}건을 추가했습니다.", goalCount);
 
         return CustomResponse.onSuccess("목표 추가가 완료 되었습니다.");
     }
