@@ -10,11 +10,9 @@ import com.poco.poco_backend.domain.member.repository.TokenRepository;
 import com.poco.poco_backend.domain.report.repository.ReportRepository;
 import com.poco.poco_backend.domain.studySession.repostitory.StudySessionRepository;
 import com.poco.poco_backend.global.exception.CustomException;
-import com.poco.poco_backend.global.security.auth.CustomUserDetails;
 import com.poco.poco_backend.global.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -94,8 +92,14 @@ public class MemberService {
 
     }
 
+    //회원 조회
     @Transactional(readOnly = true)
-    public MemberResponseDTO.MemberWithGoalsResponse getMemberInfo(String email) throws SignatureException {
+    public MemberResponseDTO.MemberWithGoalsResponse getMemberInfo(HttpServletRequest request) throws SignatureException {
+
+
+        String accessToken = jwtUtil.resolveAccessToken(request);
+
+        String email = jwtUtil.getEmail(accessToken);
 
         log.info("[ getMemberInfo ] email 을 기반으로 member 를 추출합니다.");
         Member member = memberRepository.findByEmail(email)

@@ -67,10 +67,10 @@ public class MemberController {
             access_token 정보를 바탕으로 회원의 email, goal 을 반환합니다.
             """)
     @GetMapping("/me")
-    public CustomResponse<?> getMemberInfo(@AuthenticationPrincipal CustomUserDetails userDetails)
+    public CustomResponse<?> getMemberInfo(HttpServletRequest request)
             throws SignatureException {
 
-        return CustomResponse.onSuccess(memberService.getMemberInfo(userDetails.getUsername()));
+        return CustomResponse.onSuccess(memberService.getMemberInfo(request));
     }
 
     //사용자 이름 변경

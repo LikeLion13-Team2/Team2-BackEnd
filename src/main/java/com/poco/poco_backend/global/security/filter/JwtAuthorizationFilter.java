@@ -41,9 +41,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if (
                 uri.equals("/favicon.ico") ||
                 uri.startsWith("/swagger") ||
-                uri.startsWith("/v3/api-docs") || uri.startsWith("/error") || uri.startsWith("/actuator") ||
-                uri.startsWith("/") || uri.startsWith(".css") || uri.startsWith(".js") ||
-                uri.startsWith(".map") || uri.startsWith(".json")) {
+                uri.startsWith("/v3/api-docs")) {
                 filterChain.doFilter(request, response);
                 return;
         }
