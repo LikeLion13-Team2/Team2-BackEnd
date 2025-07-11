@@ -6,5 +6,10 @@ public class GoalDTO {
             String goalNames
     ) {}
 
+    public record UpdateProfileDTO(
+            String newName,
+            String goalNames
+    ) {}
+
 
 }

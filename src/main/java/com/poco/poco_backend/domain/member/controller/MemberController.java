@@ -4,9 +4,11 @@ package com.poco.poco_backend.domain.member.controller;
 import com.poco.poco_backend.domain.member.dto.request.GoalDTO;
 import com.poco.poco_backend.domain.member.dto.request.MemberRequestDTO;
 import com.poco.poco_backend.domain.member.entity.Member;
+import com.poco.poco_backend.domain.member.repository.MemberRepository;
 import com.poco.poco_backend.domain.member.service.GoogleLoginService;
 import com.poco.poco_backend.domain.member.service.MemberService;
 import com.poco.poco_backend.global.CustomResponse;
+import com.poco.poco_backend.global.exception.CustomException;
 import com.poco.poco_backend.global.security.auth.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -24,6 +26,8 @@ import java.security.SignatureException;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.poco.poco_backend.domain.member.exception.MemberErrorCode.MEMBER_NOT_FOUND;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -33,6 +37,7 @@ public class MemberController {
 
     private final GoogleLoginService googleLoginService;
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
 
     //로그아웃 api
@@ -75,6 +80,44 @@ public class MemberController {
         return CustomResponse.onSuccess(memberService.getMemberInfo(request));
     }
 
+
+    //프로필 변경 api
+    @SecurityRequirement(name = "JWT TOKEN")
+    @Operation(summary = "회원 프로필 변경", description = "회원가입 페이지에서 사용하는 회원 프로필 변경 api 입니다.")
+    @PatchMapping("/profile")
+    public CustomResponse<?> changeNameGoal(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                            @RequestBody GoalDTO.UpdateProfileDTO updateProfileDTO)
+            throws SignatureException {
+
+        int goalCount = 0;
+
+        String newName = updateProfileDTO.newName();
+        String goalNames = updateProfileDTO.goalNames();
+        String email = userDetails.getUsername();
+
+        //문자열을 리스트 형태로 파싱
+        String[] goalList = goalNames.split(",");
+
+        memberService.changeMemberName(email, newName);
+
+        //멤버 가져오기
+        Member member = memberRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        //멤버의 목표 초기화
+        member.resetGoal();
+
+        //파싱한 리스트 마다 멤버의 목표에 추가
+        for (String goal : goalList) {
+            memberService.setMemberGoal(userDetails.getUsername(), goal);
+            goalCount++;
+        }
+
+        log.info("[ changeNameGoal ] 목표 {}건을 추가했습니다.", goalCount);
+
+        return CustomResponse.onSuccess("프로필 변경이 완료되었습니다.");
+    }
+
     //사용자 이름 변경
     @SecurityRequirement(name = "JWT TOKEN")
     @Operation(summary = "회원 이름 변경", description = "회원 이름 변경 api 입니다.")
@@ -99,6 +142,13 @@ public class MemberController {
     public CustomResponse<?> setGoal(@AuthenticationPrincipal CustomUserDetails userDetails,
                                      @RequestBody GoalDTO.UpdateGoalDTO updateGoalDTO)
             throws SignatureException {
+
+        //멤버 가져오기
+        Member member = memberRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        //멤버의 목표 초기화
+        member.resetGoal();
 
         int goalCount = 0;
 
