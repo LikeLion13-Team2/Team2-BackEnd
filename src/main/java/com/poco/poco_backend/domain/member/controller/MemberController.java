@@ -117,7 +117,4 @@ public class MemberController {
 
         return CustomResponse.onSuccess("목표 삭제가 완료 되었습니다.");
     }
-
-
-
 }

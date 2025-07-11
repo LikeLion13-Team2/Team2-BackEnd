@@ -28,13 +28,13 @@ public class GoogleLoginController {
     @Operation(summary = "구글 회원가입 및 로그인"
             , description = """
             클라이언트로부터 POST로 전달받은 인가 코드를 이용하여 구글로부터 accessToken을 발급 받습니다.\n
-            발급 받은 accessToken에서 사용자의 정보를 추출한 뒤, 서버 accessToken, refreshToken을 발급한 다음, 
-            클라이언트로 전송합니다.            
+            발급 받은 accessToken에서 사용자의 정보를 추출한 뒤, 서버 accessToken, refreshToken을 발급한 다음,
+            클라이언트로 전송합니다.
             """
     )
     @PostMapping("/google")
     public CustomResponse<?> googleLogin(@RequestBody CodeDTO codeDTO) {
-
+        log.info("인가 코드 정보 =  {}", codeDTO.code());
         //코드를 보내서 파싱한 다음
         GoogleMemberDTO memberDTO = googleLoginService.getMemberInfo(codeDTO.code());
 
