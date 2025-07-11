@@ -126,6 +126,7 @@ public class MemberService {
         return new MemberResponseDTO.MemberWithGoalsResponse(member.getName(), goals);
     }
 
+    //이름 변경
     @Transactional
     public void changeMemberName(HttpServletRequest request, String newName) throws SignatureException {
 

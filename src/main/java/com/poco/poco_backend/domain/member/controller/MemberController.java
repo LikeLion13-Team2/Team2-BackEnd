@@ -72,7 +72,7 @@ public class MemberController {
     @Operation(summary = "회원 이름 변경", description = "회원 이름 변경 api 입니다.")
     @PatchMapping("/name")
     public CustomResponse<?> changeName(HttpServletRequest request,
-                                        @Param("newName") MemberRequestDTO.ChangeNameDTO changeNameDTO)
+                                        @RequestBody MemberRequestDTO.ChangeNameDTO changeNameDTO)
             throws SignatureException {
 
         String newName = changeNameDTO.newName();
