@@ -41,6 +41,7 @@ public class StudySessionConverter {
 
     public static StudySessionResponseDTO.StudySessionDetailResponseDTO toStudySessionDetailResponseDTO(StudySession studySession) {
         return StudySessionResponseDTO.StudySessionDetailResponseDTO.builder()
+                .sessionId(studySession.getId())
                 .title(studySession.getTitle())
                 .startedAt(studySession.getStartedAt())
                 .endedAt(studySession.getEndedAt())

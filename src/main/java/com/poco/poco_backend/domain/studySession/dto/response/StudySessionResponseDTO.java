@@ -23,6 +23,7 @@ public class StudySessionResponseDTO {
 
     @Builder
     public record StudySessionDetailResponseDTO(
+            Long sessionId,
             String title,
             LocalDateTime startedAt,
             LocalDateTime endedAt,
