@@ -13,4 +13,6 @@ public interface GoalRepository extends JpaRepository<Goal, Long> {
     Optional<Goal> findGoalByGoalName(@Param("goalName") String goalName);
 
 
+
+
 }
