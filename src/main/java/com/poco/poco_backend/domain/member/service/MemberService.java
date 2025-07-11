@@ -5,14 +5,18 @@ import com.poco.poco_backend.domain.member.dto.response.MemberResponseDTO;
 import com.poco.poco_backend.domain.member.entity.Goal;
 import com.poco.poco_backend.domain.member.entity.Member;
 import com.poco.poco_backend.domain.member.repository.GoalRepository;
+import com.poco.poco_backend.domain.member.repository.MemberGoalRepository;
 import com.poco.poco_backend.domain.member.repository.MemberRepository;
 import com.poco.poco_backend.domain.member.repository.TokenRepository;
 import com.poco.poco_backend.domain.report.repository.ReportRepository;
+import com.poco.poco_backend.domain.report.repository.ReportSessionRepository;
+import com.poco.poco_backend.domain.studySession.entity.StudySession;
 import com.poco.poco_backend.domain.studySession.repostitory.StudySessionRepository;
 import com.poco.poco_backend.global.exception.CustomException;
 import com.poco.poco_backend.global.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +35,8 @@ public class MemberService {
     private final StudySessionRepository studySessionRepository;
     private final ReportRepository reportRepository;
     private final GoalRepository goalRepository;
+    private final MemberGoalRepository memberGoalRepository;
+    private final ReportSessionRepository reportSessionRepository;
 
     public MemberService (
             JwtUtil jwtUtil,
@@ -38,7 +44,9 @@ public class MemberService {
             MemberRepository memberRepository,
             StudySessionRepository studySessionRepository,
             ReportRepository reportRepository,
-            GoalRepository goalRepository
+            GoalRepository goalRepository,
+            MemberGoalRepository memberGoalRepository,
+            ReportSessionRepository reportSessionRepository
     ) {
         this.jwtUtil = jwtUtil;
         this.tokenRepository = tokenRepository;
@@ -46,6 +54,8 @@ public class MemberService {
         this.studySessionRepository = studySessionRepository;
         this.reportRepository = reportRepository;
         this.goalRepository = goalRepository;
+        this.memberGoalRepository = memberGoalRepository;
+        this.reportSessionRepository = reportSessionRepository;
     }
 
     //로그아웃 메서드
@@ -70,23 +80,32 @@ public class MemberService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
+        List<StudySession> studySession = studySessionRepository.findByMember(member);
+
+        studySession.forEach(reportSessionRepository::deleteReportStudySessionByStudySession);
+
         int deletedSession = studySessionRepository.deleteByMember(member);
         log.info("[ Delete Member ] 회원 학습 세션 {}건 삭제 완료", deletedSession);
 
         int deletedReport = reportRepository.deleteByMember(member);
         log.info("[ Delete Member ] 회원 학습 리포트 {}건 삭제 완료", deletedReport);
 
+
         //멤버를 삭제할 시, refreshToken 또한 함께 제거
         int tokenDeleted = tokenRepository.deleteByEmail(email);
         log.info("[ Delete Member ] 회원 토큰 삭제 완료");
+
+        int goalDeleted = memberGoalRepository.deleteMemberGoalByMember(member);
+        log.info("[ Delete Member ] Goal 과의 매핑 테이블 내의 레코드 {}건 삭제 완료", goalDeleted);
+
 
         int memberDeleted = memberRepository.deleteMemberByEmail(email);
         log.info("[ Delete Member ] 회원 삭제 완료");
 
         if (memberDeleted == 0)
             log.warn("[ Delete Member ] 삭제할 회원이 존재하지 않습니다.");
-        else if (tokenDeleted == 0)
-            log.warn("[ Delete Member ] 삭제할 토큰이 존재하지 않습니다.");
+       /* else if (tokenDeleted == 0)
+            log.warn("[ Delete Member ] 삭제할 토큰이 존재하지 않습니다.");*/
         else
             log.info("[ Delete Member ] 회원 탈퇴가 완료되었습니다.");
 

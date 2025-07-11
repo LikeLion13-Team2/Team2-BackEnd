@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface StudySessionRepository extends JpaRepository<StudySession, Long> {
@@ -21,5 +22,11 @@ public interface StudySessionRepository extends JpaRepository<StudySession, Long
     @Modifying
     @Query("DELETE FROM StudySession s WHERE s.member = :member")
     int deleteByMember(@Param("member") Member member);
+
+    @Query("SELECT s FROM StudySession s WHERE s.member = :member")
+    List<StudySession> findByMember(@Param("member") Member member);
+
+
+
 }
 
