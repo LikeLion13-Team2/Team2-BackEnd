@@ -19,7 +19,7 @@ import java.security.SignatureException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/oauth")
-@Tag(name = "Google Login", description = "구글 로그인 관련 API by 한민.")
+@Tag(name = "Google Login", description = "구글 로그인 관련 API by 한민")
 public class GoogleLoginController {
 
     private final GoogleLoginService googleLoginService;
