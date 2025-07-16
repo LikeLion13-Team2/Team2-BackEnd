@@ -14,9 +14,7 @@ import com.poco.poco_backend.domain.studySession.entity.StudySession;
 import com.poco.poco_backend.domain.studySession.repostitory.StudySessionRepository;
 import com.poco.poco_backend.global.exception.CustomException;
 import com.poco.poco_backend.global.security.jwt.JwtUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,7 +78,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        List<StudySession> studySession = studySessionRepository.findByMember(member);
+        /*List<StudySession> studySession = studySessionRepository.findByMember(member);
 
         studySession.forEach(reportSessionRepository::deleteReportStudySessionByStudySession);
 
@@ -96,18 +94,20 @@ public class MemberService {
         log.info("[ Delete Member ] 회원 토큰 삭제 완료");
 
         int goalDeleted = memberGoalRepository.deleteMemberGoalByMember(member);
-        log.info("[ Delete Member ] Goal 과의 매핑 테이블 내의 레코드 {}건 삭제 완료", goalDeleted);
+        log.info("[ Delete Member ] Goal 과의 매핑 테이블 내의 레코드 {}건 삭제 완료", goalDeleted);*/
 
 
-        int memberDeleted = memberRepository.deleteMemberByEmail(email);
+       /* int memberDeleted = memberRepository.deleteMemberByEmail(email);*/
+
+        memberRepository.delete(member);
         log.info("[ Delete Member ] 회원 삭제 완료");
 
-        if (memberDeleted == 0)
+        /*if (memberDeleted == 0)
             log.warn("[ Delete Member ] 삭제할 회원이 존재하지 않습니다.");
-       /* else if (tokenDeleted == 0)
-            log.warn("[ Delete Member ] 삭제할 토큰이 존재하지 않습니다.");*/
+        else if (tokenDeleted == 0)
+            log.warn("[ Delete Member ] 삭제할 토큰이 존재하지 않습니다.");
         else
-            log.info("[ Delete Member ] 회원 탈퇴가 완료되었습니다.");
+            log.info("[ Delete Member ] 회원 탈퇴가 완료되었습니다.");*/
 
     }
 

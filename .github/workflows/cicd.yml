@@ -2,12 +2,12 @@
 name: Deploy to AWS EC2 using Docker
 
 # event
-on:
-  #pr이 승인되었을 때 자동으로 배포되게 설정
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+#on:
+#  pr이 승인되었을 때 자동으로 배포되게 설정
+#  push:
+#    branches:
+#      - main
+#  workflow_dispatch:
 
 env:
   DOCKER_IMAGE_NAME: hanmin129/min
