@@ -9,7 +9,4 @@ import org.springframework.data.repository.query.Param;
 
 public interface MemberGoalRepository extends JpaRepository<MemberGoal, Long> {
 
-    @Modifying
-    @Query("DELETE FROM MemberGoal m WHERE m.member = :member")
-    int deleteMemberGoalByMember(@Param("member") Member member);
 }
