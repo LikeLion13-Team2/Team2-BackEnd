@@ -5,19 +5,13 @@ import com.foco.foco_backend.domain.member.dto.response.MemberResponseDTO;
 import com.foco.foco_backend.domain.member.entity.Goal;
 import com.foco.foco_backend.domain.member.entity.Member;
 import com.foco.foco_backend.domain.member.repository.GoalRepository;
-import com.foco.foco_backend.domain.member.repository.MemberGoalRepository;
 import com.foco.foco_backend.domain.member.repository.MemberRepository;
 import com.foco.foco_backend.domain.member.repository.TokenRepository;
-import com.foco.foco_backend.domain.report.repository.ReportRepository;
-import com.foco.foco_backend.domain.report.repository.ReportSessionRepository;
-import com.foco.foco_backend.domain.studySession.repostitory.StudySessionRepository;
 import com.foco.foco_backend.global.exception.CustomException;
-import com.foco.foco_backend.global.security.jwt.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.SignatureException;
 import java.util.List;
 
 import static com.foco.foco_backend.domain.member.exception.MemberErrorCode.MEMBER_NOT_FOUND;
@@ -26,38 +20,23 @@ import static com.foco.foco_backend.domain.member.exception.MemberErrorCode.MEMB
 @Service
 public class MemberService {
 
-    private final JwtUtil jwtUtil;
     private final TokenRepository tokenRepository;
     private final MemberRepository memberRepository;
-    private final StudySessionRepository studySessionRepository;
-    private final ReportRepository reportRepository;
     private final GoalRepository goalRepository;
-    private final MemberGoalRepository memberGoalRepository;
-    private final ReportSessionRepository reportSessionRepository;
 
     public MemberService (
-            JwtUtil jwtUtil,
             TokenRepository tokenRepository,
             MemberRepository memberRepository,
-            StudySessionRepository studySessionRepository,
-            ReportRepository reportRepository,
-            GoalRepository goalRepository,
-            MemberGoalRepository memberGoalRepository,
-            ReportSessionRepository reportSessionRepository
+            GoalRepository goalRepository
     ) {
-        this.jwtUtil = jwtUtil;
         this.tokenRepository = tokenRepository;
         this.memberRepository = memberRepository;
-        this.studySessionRepository = studySessionRepository;
-        this.reportRepository = reportRepository;
         this.goalRepository = goalRepository;
-        this.memberGoalRepository = memberGoalRepository;
-        this.reportSessionRepository = reportSessionRepository;
     }
 
     //로그아웃 메서드
     @Transactional
-    public void memberLogout(String email) throws SignatureException {
+    public void memberLogout(String email) {
 
         log.info("[ Logout ] 로그아웃을 진행합니다.");
         int deletedTokenCount = tokenRepository.deleteByEmail(email);
@@ -70,7 +49,7 @@ public class MemberService {
 
     //회원탈퇴 메서드
     @Transactional
-    public void deleteMember(String email) throws SignatureException {
+    public void deleteMember(String email) {
 
         log.info("[ Delete Member ] 회원 탈퇴를 진행합니다.");
 
@@ -83,7 +62,7 @@ public class MemberService {
 
     //회원 조회
     @Transactional(readOnly = true)
-    public MemberResponseDTO.MemberWithGoalsResponse getMemberInfo(String email) throws SignatureException {
+    public MemberResponseDTO.MemberWithGoalsResponse getMemberInfo(String email) {
 
 
         log.info("[ getMemberInfo ] email 을 기반으로 member 를 추출합니다.");
@@ -104,7 +83,7 @@ public class MemberService {
 
     //이름 변경
     @Transactional
-    public void changeMemberName(String email, String newName) throws SignatureException {
+    public void changeMemberName(String email, String newName) {
 
         memberRepository.findByEmail(email)
                 .ifPresentOrElse(
@@ -114,7 +93,7 @@ public class MemberService {
     }
     // 목표 설정
     @Transactional
-    public void setMemberGoal(String email, String goalName) throws SignatureException {
+    public void setMemberGoal(String email, String goalName) {
 
         //멤버 가져오기
         Member member = memberRepository.findByEmail(email)
@@ -136,7 +115,7 @@ public class MemberService {
 
     // 사용자 목표 삭제
     @Transactional
-    public void deleteMemberGoal(String email, String goalName) throws SignatureException {
+    public void deleteMemberGoal(String email, String goalName) {
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));

@@ -5,7 +5,6 @@ import com.foco.foco_backend.domain.member.dto.request.GoalDTO;
 import com.foco.foco_backend.domain.member.dto.request.MemberRequestDTO;
 import com.foco.foco_backend.domain.member.entity.Member;
 import com.foco.foco_backend.domain.member.repository.MemberRepository;
-import com.foco.foco_backend.domain.member.service.GoogleLoginService;
 import com.foco.foco_backend.domain.member.service.MemberService;
 import com.foco.foco_backend.global.CustomResponse;
 import com.foco.foco_backend.global.exception.CustomException;
@@ -17,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.SignatureException;
 
 import static com.foco.foco_backend.domain.member.exception.MemberErrorCode.MEMBER_NOT_FOUND;
 
@@ -37,8 +34,7 @@ public class MemberController {
     @SecurityRequirement(name = "JWT TOKEN")
     @Operation(summary = "로그아웃", description = "로그아웃 api 입니다.")
     @DeleteMapping("/logout")
-    public CustomResponse<?> logout(@AuthenticationPrincipal CustomUserDetails userDetails)
-            throws SignatureException {
+    public CustomResponse<?> logout(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         memberService.memberLogout(userDetails.getUsername());
 
@@ -52,8 +48,7 @@ public class MemberController {
             로그아웃 성공 시, 클라이언트 측 accessToken 및 회원 데이터도 삭제해주시면 감사하겠습니다.
             """)
     @DeleteMapping("/me")
-    public CustomResponse<?> deleteMember(@AuthenticationPrincipal CustomUserDetails userDetails)
-            throws SignatureException {
+    public CustomResponse<?> deleteMember(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         memberService.deleteMember(userDetails.getUsername());
 
@@ -67,8 +62,7 @@ public class MemberController {
             access_token 정보를 바탕으로 회원의 email, goal 을 반환합니다.
             """)
     @GetMapping("/me")
-    public CustomResponse<?> getMemberInfo(@AuthenticationPrincipal CustomUserDetails userDetails)
-            throws SignatureException {
+    public CustomResponse<?> getMemberInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         String email = userDetails.getUsername();
 
@@ -81,8 +75,7 @@ public class MemberController {
     @Operation(summary = "회원 프로필 변경", description = "회원가입 페이지에서 사용하는 회원 프로필 변경 api 입니다.")
     @PutMapping("/profile")
     public CustomResponse<?> changeNameGoal(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                            @RequestBody GoalDTO.UpdateProfileDTO updateProfileDTO)
-            throws SignatureException {
+                                            @RequestBody GoalDTO.UpdateProfileDTO updateProfileDTO) {
 
         int goalCount = 0;
 
@@ -118,8 +111,7 @@ public class MemberController {
     @Operation(summary = "회원 이름 변경", description = "회원 이름 변경 api 입니다.")
     @PutMapping("/name")
     public CustomResponse<?> changeName(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                        @RequestBody MemberRequestDTO.ChangeNameDTO changeNameDTO)
-            throws SignatureException {
+                                        @RequestBody MemberRequestDTO.ChangeNameDTO changeNameDTO) {
 
         String newName = changeNameDTO.newName();
 
@@ -135,8 +127,7 @@ public class MemberController {
     @Operation(summary = "목표 추가", description = "목표 추가 api 입니다.")
     @PutMapping("/goals")
     public CustomResponse<?> setGoal(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                     @RequestBody GoalDTO.UpdateGoalDTO updateGoalDTO)
-            throws SignatureException {
+                                     @RequestBody GoalDTO.UpdateGoalDTO updateGoalDTO) {
 
         //멤버 가져오기
         Member member = memberRepository.findByEmail(userDetails.getUsername())
@@ -166,8 +157,7 @@ public class MemberController {
     @Operation(summary = "목표 삭제", description = "목표 삭제 api 입니다.")
     @DeleteMapping("/goals/{goalName}")
     public CustomResponse<?> deleteGoal(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                        @PathVariable String goalName)
-            throws SignatureException {
+                                        @PathVariable String goalName) {
 
         memberService.deleteMemberGoal(userDetails.getUsername(), goalName);
 
