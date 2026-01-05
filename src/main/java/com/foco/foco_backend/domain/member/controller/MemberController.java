@@ -29,7 +29,6 @@ import static com.foco.foco_backend.domain.member.exception.MemberErrorCode.MEMB
 @Tag(name = "Member", description = "멤버 관련 API by 한민")
 public class MemberController {
 
-    private final GoogleLoginService googleLoginService;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
 
@@ -64,7 +63,7 @@ public class MemberController {
     //회원 정보 조회
     @SecurityRequirement(name = "JWT TOKEN")
     @Operation(summary = "회원 정보 조회", description = """
-            회원 정보 조회 api 입니다.\n
+            회원 정보 조회 api 입니다.
             access_token 정보를 바탕으로 회원의 email, goal 을 반환합니다.
             """)
     @GetMapping("/me")

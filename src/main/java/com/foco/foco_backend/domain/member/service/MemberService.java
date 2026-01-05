@@ -77,37 +77,8 @@ public class MemberService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        /*List<StudySession> studySession = studySessionRepository.findByMember(member);
-
-        studySession.forEach(reportSessionRepository::deleteReportStudySessionByStudySession);
-
-        int deletedSession = studySessionRepository.deleteByMember(member);
-        log.info("[ Delete Member ] 회원 학습 세션 {}건 삭제 완료", deletedSession);
-
-        int deletedReport = reportRepository.deleteByMember(member);
-        log.info("[ Delete Member ] 회원 학습 리포트 {}건 삭제 완료", deletedReport);
-
-
-        //멤버를 삭제할 시, refreshToken 또한 함께 제거
-        int tokenDeleted = tokenRepository.deleteByEmail(email);
-        log.info("[ Delete Member ] 회원 토큰 삭제 완료");
-
-        int goalDeleted = memberGoalRepository.deleteMemberGoalByMember(member);
-        log.info("[ Delete Member ] Goal 과의 매핑 테이블 내의 레코드 {}건 삭제 완료", goalDeleted);*/
-
-
-       /* int memberDeleted = memberRepository.deleteMemberByEmail(email);*/
-
         memberRepository.delete(member);
         log.info("[ Delete Member ] 회원 삭제 완료");
-
-        /*if (memberDeleted == 0)
-            log.warn("[ Delete Member ] 삭제할 회원이 존재하지 않습니다.");
-        else if (tokenDeleted == 0)
-            log.warn("[ Delete Member ] 삭제할 토큰이 존재하지 않습니다.");
-        else
-            log.info("[ Delete Member ] 회원 탈퇴가 완료되었습니다.");*/
-
     }
 
     //회원 조회
@@ -135,14 +106,13 @@ public class MemberService {
     @Transactional
     public void changeMemberName(String email, String newName) throws SignatureException {
 
-        int nameChanged = memberRepository.updateMemberByEmail(email, newName);
-
-        if (nameChanged == 0)
-            log.warn("[ changeMemberName ] 이름을 변경할 회원이 존재하지 않습니다.");
-        else
-            log.info("[ changeMemberName ] 회원 이름 {}건 변경 완료", nameChanged);
+        memberRepository.findByEmail(email)
+                .ifPresentOrElse(
+                        member -> member.setName(newName),
+                        () -> { throw new CustomException(MEMBER_NOT_FOUND); }
+                );
     }
-
+    // 목표 설정
     @Transactional
     public void setMemberGoal(String email, String goalName) throws SignatureException {
 
@@ -164,6 +134,7 @@ public class MemberService {
         }
     }
 
+    // 사용자 목표 삭제
     @Transactional
     public void deleteMemberGoal(String email, String goalName) throws SignatureException {
 

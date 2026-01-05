@@ -3,7 +3,6 @@ package com.foco.foco_backend.global.security.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foco.foco_backend.global.CustomResponse;
 import com.foco.foco_backend.global.code.AuthErrorCode;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
@@ -16,7 +15,7 @@ import java.io.IOException;
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
-                         AuthenticationException authException) throws IOException, ServletException {
+                         AuthenticationException authException) throws IOException {
         response.setContentType("application/json; charset=UTF-8");
         response.setStatus(401);
         CustomResponse<Object> errorResponse = CustomResponse.onFailure(

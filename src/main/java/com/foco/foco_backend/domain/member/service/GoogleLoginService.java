@@ -28,6 +28,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -44,14 +45,13 @@ public class GoogleLoginService {
     private final JwtUtil jwtUtil;
     private final TokenRepository tokenRepository;
     private final MemberRepository memberRepository;
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     public GoogleLoginService (
             JwtUtil jwtUtil,
             TokenRepository tokenRepository,
             MemberRepository memberRepository,
-            RestTemplateBuilder restTemplateBuilder,
-            CustomUserDetailsService customUserDetailsService
+            RestTemplateBuilder restTemplateBuilder
     ) {
         this.jwtUtil = jwtUtil;
         this.tokenRepository = tokenRepository;
@@ -84,7 +84,7 @@ public class GoogleLoginService {
         log.info("Google Token Request Body = {}", body);
         log.info("Google Token Headers = {}", headers);
 
-        ResponseEntity<Map> tokenResponse = null;
+        ResponseEntity<Map> tokenResponse;
         try {
             tokenResponse = restTemplate.postForEntity(
                     "https://oauth2.googleapis.com/token", tokenRequest, Map.class);
@@ -100,7 +100,7 @@ public class GoogleLoginService {
 
         log.info("[GoogleLoginService] Token Response: {}", tokenResponse.getBody());
 
-        String accessToken = (String) tokenResponse.getBody().get("access_token");
+        String accessToken = (String) Objects.requireNonNull(tokenResponse.getBody()).get("access_token");
 
         //1-2 사용자 정보 요청
         HttpHeaders memberHeaders = new HttpHeaders();
@@ -114,12 +114,12 @@ public class GoogleLoginService {
                 Map.class
         );
 
-        Map<String, Object> memberInfo = memberInfoResponse.getBody();
+        Map memberInfo = memberInfoResponse.getBody();
 
         log.info("[GoogleLoginService] Member Info Response: {}", memberInfo);
 
         return new GoogleMemberDTO(
-                (String) memberInfo.get("email"),
+                (String) Objects.requireNonNull(memberInfo).get("email"),
                 (String) memberInfo.get("name")
         );
 

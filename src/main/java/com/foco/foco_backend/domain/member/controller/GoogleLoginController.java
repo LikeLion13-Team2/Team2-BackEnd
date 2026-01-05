@@ -27,7 +27,7 @@ public class GoogleLoginController {
     //구글 로그인 api
     @Operation(summary = "구글 회원가입 및 로그인"
             , description = """
-            클라이언트로부터 POST로 전달받은 인가 코드를 이용하여 구글로부터 accessToken을 발급 받습니다.\n
+            클라이언트로부터 POST로 전달받은 인가 코드를 이용하여 구글로부터 accessToken을 발급 받습니다.
             발급 받은 accessToken에서 사용자의 정보를 추출한 뒤, 서버 accessToken, refreshToken을 발급한 다음,
             클라이언트로 전송합니다.
             """

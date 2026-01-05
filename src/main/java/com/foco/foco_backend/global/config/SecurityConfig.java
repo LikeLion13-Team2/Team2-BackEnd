@@ -29,7 +29,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 public class SecurityConfig {
 
     //인증 관리자 설정
-    private final AuthenticationConfiguration authenticationConfiguration;
+    // private final AuthenticationConfiguration authenticationConfiguration;
     //토큰 생성, 파싱, 검증할 객체 생성
     private final JwtUtil jwtUtil;
     //인가 예외 핸들러
@@ -79,7 +79,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 // cors
                 .cors(cors -> cors.configurationSource(corsConfigurationSource));
-        ;
+
 
         //최종 SecurityFilterChain 객체 생성
         return http.build();
