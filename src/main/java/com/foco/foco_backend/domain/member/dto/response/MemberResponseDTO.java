@@ -4,11 +4,6 @@ import java.util.List;
 
 public class MemberResponseDTO {
 
-    public record MemberInfoDTO(
-            String name,
-            List<GoalDTO> goals
-    ) {}
-
     public record GoalDTO(
             String goalName
     ) {}

@@ -1,5 +1,8 @@
 package com.foco.foco_backend.common.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum PeriodType {
     DAY_1(1),
     DAY_3(3),
@@ -11,7 +14,4 @@ public enum PeriodType {
         this.days = days;
     }
 
-    public int getDays() {
-        return days;
-    }
 }
