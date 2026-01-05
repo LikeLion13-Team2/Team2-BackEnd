@@ -1,0 +1,56 @@
+package com.foco.foco_backend.domain.studySession.converter;
+
+import com.foco.foco_backend.domain.member.entity.Member;
+import com.foco.foco_backend.domain.studySession.dto.request.StudySessionRequestDTO;
+import com.foco.foco_backend.domain.studySession.dto.response.StudySessionResponseDTO;
+import com.foco.foco_backend.domain.studySession.entity.StudySession;
+
+public class StudySessionConverter {
+
+    public static StudySession toStudySession(StudySessionRequestDTO.CreateStudySessionRequestDTO dto,
+                                              StudySessionRequestDTO.StudySessionCalculations calculations,
+                                              Member member) {
+        return StudySession.builder()
+                .title(dto.title())
+                .startedAt(dto.startedAt())
+                .endedAt(dto.endedAt())
+                .sessionSeconds(calculations.sessionSeconds())
+                .focusSeconds(calculations.focusSeconds())
+                .distractionSeconds(calculations.distractionSeconds())
+                .breakSeconds(calculations.breakSeconds())
+                .longestFocusSeconds(calculations.longestFocusSeconds())
+                .focusScore(dto.focusScore())
+                .member(member)
+                .build();
+    }
+
+    public static StudySessionResponseDTO.CreateStudySessionResponseDTO toStudySessionResponseDTO(StudySession studySession) {
+        return StudySessionResponseDTO.CreateStudySessionResponseDTO.builder()
+                .sessionId(studySession.getId())
+                .title(studySession.getTitle())
+                .startedAt(studySession.getStartedAt())
+                .endedAt(studySession.getEndedAt())
+                .sessionSeconds(studySession.getSessionSeconds())
+                .focusSeconds(studySession.getFocusSeconds())
+                .distractionSeconds(studySession.getDistractionSeconds())
+                .breakSeconds(studySession.getBreakSeconds())
+                .longestFocusSeconds(studySession.getLongestFocusSeconds())
+                .focusScore(studySession.getFocusScore())
+                .build();
+    }
+
+    public static StudySessionResponseDTO.StudySessionDetailResponseDTO toStudySessionDetailResponseDTO(StudySession studySession) {
+        return StudySessionResponseDTO.StudySessionDetailResponseDTO.builder()
+                .sessionId(studySession.getId())
+                .title(studySession.getTitle())
+                .startedAt(studySession.getStartedAt())
+                .endedAt(studySession.getEndedAt())
+                .sessionSeconds(studySession.getSessionSeconds())
+                .focusSeconds(studySession.getFocusSeconds())
+                .distractionSeconds(studySession.getDistractionSeconds())
+                .breakSeconds(studySession.getBreakSeconds())
+                .longestFocusSeconds(studySession.getLongestFocusSeconds())
+                .focusScore(studySession.getFocusScore())
+                .build();
+    }
+}
