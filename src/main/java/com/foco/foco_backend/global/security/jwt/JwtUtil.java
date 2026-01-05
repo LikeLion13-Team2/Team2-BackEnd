@@ -49,7 +49,7 @@ public class JwtUtil {
 
 
     //토큰에서 이메일 추출
-    public String getEmail(String token) throws SignatureException {
+    public String getEmail(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
